@@ -7,17 +7,20 @@ import Product from "./pages/Product";
 import Register from "./pages/Register";
 import { ForgotPassword } from "./pages/ForgotPassword";
 import AdminDashboard from "./pages/AdminDashboard";
+import DashboardLayout from "./components/layouts/DashboardLayout";
 
 export default function Router() {
   return (
     <>
       <Routes>
       <Route path="/" element={<MainLayout />}>
-        <Route index element={<Home />} />
-        <Route path="admin/">
-          <Route index element={<AdminDashboard />} />
-        </Route>
+        <Route index element={<Home />} />  
       </Route>
+      <Route path="dashboard" element={<DashboardLayout/>}>
+          <Route path="admin">
+            <Route index element={<AdminDashboard />} />
+          </Route>
+        </Route>
       <Route path="product" element={<ProductLayout />}>
         <Route index element={<Product/>}/>
       </Route>

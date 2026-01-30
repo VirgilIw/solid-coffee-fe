@@ -5,7 +5,7 @@ import AdminDashboardMenu from '../components/adminDashboard/AdminDashboardMenu'
 
 function AdminDashboard() {
   return (
-    <div className="grid grid-cols-[30%_70%]">
+    <div className="mt-8 px-5 py-10 lg:px-10 grid grid-cols-[30%_70%]">
       <AdminDashboardMenu/>
       <UserlistMenu/>
     </div>
