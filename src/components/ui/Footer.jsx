@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import CoffeeIcon from "../../assets/images/coffe-shop.svg"
 import Facebook from "../../assets/footer/Facebook.svg"
 import Twitter from "../../assets/footer/Tweet.svg"
@@ -8,7 +9,9 @@ export default function Footer() {
     <>
         <section className='flex flex-col md:flex-row justify-between bg-white py-16 lg:py-20 px-8 sm:px-12 md:px-16 lg:px-24 gap-12 md:gap-0 border-t border-gray-100'>
             <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                <img src={CoffeeIcon} alt="Coffee Icon" className="h-10 md:h-12" />
+                <Link to="/">
+                  <img src={CoffeeIcon} alt="Coffee Icon" className="h-10 md:h-12 cursor-pointer" />
+                </Link>
                 <p className='w-full max-w-sm mt-6 text-[#4F5665] leading-relaxed opacity-80 text-sm sm:text-base'>
                   Coffee Shop is a store that sells some good meals, and especially coffee. We provide high quality beans
                 </p>
@@ -21,7 +24,9 @@ export default function Footer() {
               <div className='flex flex-col gap-6 w-full sm:w-auto'>
                   <p className='font-bold text-[#0B0909]'>Product</p>
                   <ul className='flex flex-col gap-3 text-[#4F5665] opacity-80 text-sm sm:text-base'>
-                      <li className="hover:text-brand-orange cursor-pointer transition-all">Our Product</li>
+                      <li>
+                        <Link to="/product" className="hover:text-brand-orange cursor-pointer transition-all">Our Product</Link>
+                      </li>
                       <li className="hover:text-brand-orange cursor-pointer transition-all">Pricing</li>
                       <li className="hover:text-brand-orange cursor-pointer transition-all">Locations</li>
                       <li className="hover:text-brand-orange cursor-pointer transition-all">Countries</li>
