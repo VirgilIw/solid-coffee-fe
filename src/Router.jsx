@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import MainLayout from "./components/layouts/MainLayout";
 import { Login } from "./pages/Login";
 import Register from "./pages/Register";
+import { ForgotPassword } from "./pages/ForgotPassword";
 
 export default function Router() {
   return (
@@ -12,6 +13,7 @@ export default function Router() {
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
+      <Route path="forgot-password" element={<ForgotPassword />} />
       <Route
         path="*"
         element={
