@@ -23,4 +23,16 @@
   .filter-brand-orange {
     filter: invert(59%) sepia(93%) saturate(3225%) hue-rotate(351deg) brightness(102%) contrast(103%);
   }
+
+  @layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  
+  .no-scrollbar {
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
+  }
+  }
 }
