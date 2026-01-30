@@ -1,8 +1,8 @@
 import { Outlet } from "react-router";
-import Navbar from "../ui/Navbar";
+import Navbar from "../ui/productUi/navbar";
 import Footer from "../ui/Footer";
 
-export default function MainLayout() {
+export default function ProductLayout() {
   return (
     <>
       <Navbar />

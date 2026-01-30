@@ -1,14 +1,14 @@
 import { useState } from 'react'
-import CoffeeIcon from "../../assets/images/coffe-shop.svg"
-import Chart from "../../assets/home/ShoppingCart.svg"
-import Search from "../../assets/home/Search.svg"
+import CoffeeIcon from "../../../assets/images/coffe-shop.svg"
+import Chart from "../../../assets/home/ShoppingCart.svg"
+import Search from "../../../assets/home/Search.svg"
 
 export default function Navbar() {
   const [activeMenu, setActiveMenu] = useState('Home')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <header className="py-4 px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 bg-black/50 w-full fixed top-0 left-0 z-50 backdrop-blur-md">
+    <header className="py-4 px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 bg-black w-full top-0 left-0 z-50">
       <div className="flex justify-between items-center">
         <div className="flex gap-10 justify-center items-center">
           <img src={CoffeeIcon} alt="Coffee Logo" className="brightness-0 invert h-8 md:h-10" />

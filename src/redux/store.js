@@ -9,6 +9,7 @@ import {
   PURGE,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import registerReducer from "../redux/slices/register.slice";
 
 const persistConfig = {
   key: "data",
@@ -16,7 +17,7 @@ const persistConfig = {
 };
 
 const persistedReducer = persistCombineReducers(persistConfig, {
-  // Reducer
+  register: registerReducer,
 });
 
 const store = configureStore({
