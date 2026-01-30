@@ -41,13 +41,13 @@ function DashNav() {
 
           {/* Hamburger Menu Icon */}
           <button
-            className="p-1 text-white focus:outline-none md:hidden"
+            className="p-1 text-white focus:outline-none bg-gray-600 md:hidden border-0 rounded-lg"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill="none"
+                fill="#4F5665"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
@@ -85,7 +85,7 @@ function DashNav() {
       >
         <div className="flex flex-col gap-8 p-8">
           <button
-            className="self-end text-white"
+            className="self-end text-white "
             onClick={() => setIsMenuOpen(false)}
           >
             <svg
