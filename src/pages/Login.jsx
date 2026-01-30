@@ -4,19 +4,47 @@ import EyeClose from "../components/ui/EyeClose";
 import EyeOpen from "../components/ui/EyeOpen";
 import Mail from "../assets/images/mail.svg";
 import Password from "../assets/images/Password.svg";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import React from "react";
 import MediaAuth from "../components/ui/MediaAuth";
 
 export const Login = () => {
   const [openEye, setOpenEye] = React.useState(false);
+  const [form, setForm] = React.useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate()
 
   const handleEye = () => {
     setOpenEye(!openEye);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const payload = {
+        email: form.email,
+        password: form.password,
+      };
+
+      const respon = await fetch("http://192.168.50.221:8080/auth/", {
+        method: "POST",
+        "Content-Type": "application/json",
+        body: JSON.stringify(payload),
+      });
+
+      const data = await respon.json();
+      if (!respon.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+      navigate("/")
+      console.log("LOGIN SUCCESS", data);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -35,11 +63,11 @@ export const Login = () => {
         <div className="w-full space-y-4 px-2 lg:max-w-lvh lg:min-w-full lg:space-y-4">
           {/* Header */}
           <div>
-            <img src={cs} alt="Coffee shop" className="h-12 mt-10 w-36" />
+            <img src={cs} alt="Coffee shop" className="mt-10 h-12 w-36" />
             <h1 className="mb-2 text-2xl font-semibold text-[#8E6447] lg:mt-5 lg:text-xl lg:font-bold">
               Login
             </h1>
-            <p className="text-sm text-gray-500 mt-8 lg:mt-1">
+            <p className="mt-8 text-sm text-gray-500 lg:mt-1">
               Fill out the form correctly
             </p>
           </div>
@@ -56,7 +84,7 @@ export const Login = () => {
                 <img
                   src={Mail}
                   alt="mail"
-                  className="absolute left-3 top-1/2 w-5 -translate-y-1/2 opacity-60"
+                  className="absolute top-1/2 left-3 w-5 -translate-y-1/2 opacity-60"
                 />
 
                 <input
@@ -65,6 +93,10 @@ export const Login = () => {
                   placeholder="Enter your email"
                   autoComplete="off"
                   className="w-full rounded-lg border border-gray-300 bg-slate-50 py-3 pr-3 pl-10 text-base lg:w-full lg:rounded-lg lg:border lg:border-gray-300 lg:bg-slate-50 lg:py-2 lg:pr-3 lg:pl-10"
+                  value={form.email}
+                  onChange={(e) => {
+                    setForm({ ...form, email: e.target.value });
+                  }}
                 />
               </div>
             </div>
@@ -82,7 +114,7 @@ export const Login = () => {
                 <img
                   src={Password}
                   alt="password"
-                  className="absolute left-3 top-1/2 w-5 -translate-y-1/2 opacity-60"
+                  className="absolute top-1/2 left-3 w-5 -translate-y-1/2 opacity-60"
                 />
 
                 <input
@@ -90,11 +122,15 @@ export const Login = () => {
                   type={openEye ? "text" : "password"}
                   placeholder="Enter your password"
                   className="w-full rounded-lg border border-gray-300 bg-slate-50 px-3 py-3 pr-10 pl-10 text-base lg:w-full lg:rounded-lg lg:border lg:border-gray-300 lg:bg-slate-50 lg:px-3 lg:py-2 lg:pr-10 lg:pl-10"
+                  value={form.password}
+                  onChange={(e) => {
+                    setForm({ ...form, password: e.target.value });
+                  }}
                 />
 
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 lg:absolute lg:top-1/2 lg:right-2 lg:-translate-y-1/2"
+                  className="absolute top-1/2 right-3 -translate-y-1/2 lg:absolute lg:top-1/2 lg:right-2 lg:-translate-y-1/2"
                   onClick={handleEye}
                 >
                   {openEye ? <EyeOpen /> : <EyeClose />}
@@ -104,10 +140,7 @@ export const Login = () => {
 
             {/* Forgot */}
             <div className="my-4 flex justify-end lg:my-6 lg:flex lg:justify-end">
-              <Link
-                to="/forgot-password"
-                className="text-sm text-orange-400"
-              >
+              <Link to="/forgot-password" className="text-sm text-orange-400">
                 Lupa Password?
               </Link>
             </div>
