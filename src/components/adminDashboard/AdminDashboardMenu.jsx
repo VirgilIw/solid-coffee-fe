@@ -169,7 +169,6 @@ function AdminDashboardMenu() {
           </svg>
         </div>
       </div>
-      <p>menu</p>
     </div>
   );
 }
