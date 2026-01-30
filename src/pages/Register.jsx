@@ -53,7 +53,7 @@ export default function Register() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!form.name || !form.email || !form.password || !form.confirmPassword) {
@@ -61,7 +61,7 @@ export default function Register() {
       return;
     }
 
-    if (form.password.length < 8 || form.confirmPassword.length < 8) {
+    if (form.password.length < 8) {
       setErrorMessage("Password must be at least 8 characters");
       return;
     }
@@ -71,17 +71,47 @@ export default function Register() {
       return;
     }
 
-    dispatch(
-      register({
-        name: form.name,
+    try {
+      const payload = {
+        confirm_password: form.confirmPassword,
         email: form.email,
-      }),
-    );
+        fullname: form.name,
+        password: form.password,
+      };
 
-    setForm({ name: "", email: "", password: "", confirmPassword: "" });
+      const res = await fetch("http://192.168.50.221:8080/auth/new", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Register failed");
+      }
+
+      console.log("REGISTER SUCCESS:", data);
+
+      dispatch(
+        register({
+          name: form.name,
+          email: form.email,
+        }),
+      );
+
+      setForm({ name: "", email: "", password: "", confirmPassword: "" });
+      setErrorMessage("");
+    } catch (err) {
+      setErrorMessage(err.message);
+      console.error("REGISTER ERROR:", err);
+    }
   };
 
-  const isFormValid = form.name && form.email && form.password && form.confirmPassword;
+  const isFormValid =
+    form.name && form.email && form.password && form.confirmPassword;
 
   return (
     <div className="lg:grid lg:grid-cols-[25%_75%]">
@@ -215,7 +245,9 @@ export default function Register() {
             </div>
 
             {/* Error Message */}
-            {errorMessage && <p className="mt-2 text-sm text-red-500">{errorMessage}</p>}
+            {errorMessage && (
+              <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
+            )}
 
             {/* Submit */}
             <button
