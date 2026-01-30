@@ -1,3 +1,6 @@
+import { useState } from "react"
+import { Link } from "react-router"
+import ChatWindow from "../components/ui/ChatWindow"
 import BgCoffee from "../assets/home/bg-cofee-home.jpg"
 import ChatIcon from "../assets/home/ChatCircleDots.png"
 import CheckListIcon from "../assets/home/checklist-Icon.png"
@@ -11,9 +14,12 @@ import ArrowRight from "../assets/home/arrow-right.png"
 import Chart from "../assets/home/ShoppingCart.svg"
 
 export default function Home() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
     <div>
       <main>
+        {/* ... existing sections ... */}
         <section className="flex flex-col-reverse lg:flex-row min-h-screen">
           {/* Text Content */}
           <article className="bg-[#0B0909] w-full lg:w-1/2 flex flex-col justify-start items-center pt-12 pb-16 lg:pt-48 lg:pb-0 lg:bg-linear-to-b lg:from-[#37393a] lg:to-[#0B0909]">
@@ -22,9 +28,9 @@ export default function Home() {
                 <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">Start Your Day with Coffee and Good Meals</h1>
                 <p className="text-white mt-5 text-sm sm:text-base opacity-70">We provide high quality beans, good taste, and healthy meals made by love just for you. Start your day with us for a bigger smile!</p>
                 <div className="flex justify-center lg:justify-start">
-                  <button className="text-white cursor-pointer border-2 border-brand-orange rounded-[5px] py-3 px-10 text-center bg-brand-orange mt-8 hover:bg-transparent hover:text-brand-orange font-bold transition-all w-full sm:w-auto">
+                  <Link to="/product" className="text-white cursor-pointer border-2 border-brand-orange rounded-[5px] py-3 px-10 text-center bg-brand-orange mt-8 hover:bg-transparent hover:text-brand-orange font-bold transition-all w-full sm:w-auto">
                       Get Started
-                  </button>
+                  </Link>
                 </div>
               </div>
 
@@ -69,7 +75,7 @@ export default function Home() {
                   ].map((item, index) => (
                     <li key={index} className="flex items-center gap-3 text-[#4F5665]">
                       <div className="w-5 h-5 sm:w-6 sm:h-6 bg-green-500 rounded-full flex items-center justify-center shrink-0">
-                        <svg className="w-3 h-3 sm:w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                        <svg className="w-3 h-3 sm:w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"></path></svg>
                       </div>
                       <p className="text-sm sm:text-base">{item}</p>
                     </li>
@@ -119,12 +125,12 @@ export default function Home() {
                   <p className="text-brand-orange text-sm sm:text-xl mt-2 sm:mt-4 font-bold">IDR 20.000</p>
                   
                   <div className="flex flex-col mt-4 gap-2">
-                    <button className="w-full text-white border-2 border-brand-orange rounded-lg py-1.5 sm:py-2 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-[10px] sm:text-sm">
+                    <Link to="/product" className="w-full text-white border-2 border-brand-orange rounded-lg py-1.5 sm:py-2 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-[10px] sm:text-sm">
                       Buy
-                    </button>
-                    <button className="w-full border-2 border-brand-orange py-1.5 sm:py-2 rounded-lg flex justify-center items-center hover:bg-brand-orange group/cart transition-all cursor-pointer">
+                    </Link>
+                    <Link to="/product" className="w-full border-2 border-brand-orange py-1.5 sm:py-2 rounded-lg flex justify-center items-center hover:bg-brand-orange group/cart transition-all cursor-pointer">
                       <img src={Chart} alt="cart icon" className="w-4 h-4 sm:w-5 sm:h-5 filter-brand-orange group-hover/cart:brightness-0 group-hover/cart:invert" />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -192,9 +198,17 @@ export default function Home() {
         </section>
 
       </main>
+      
+      {/* Chat Feature */}
       <div className="fixed bottom-6 right-6 z-60">
-        <img src={ChatIcon} alt="Chat Icon"  className="cursor-pointer bg-brand-orange border-2 border-brand-orange p-3 rounded-full hover:scale-110 transition-all duration-300 shadow-2xl w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16"/>
+        <img 
+          src={ChatIcon} 
+          alt="Chat Icon"  
+          onClick={() => setIsChatOpen(!isChatOpen)}
+          className={`cursor-pointer bg-brand-orange border-2 border-brand-orange p-3 rounded-full hover:scale-110 active:scale-90 transition-all duration-300 shadow-2xl w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16`}
+        />
       </div>
+      <ChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   )
 }
