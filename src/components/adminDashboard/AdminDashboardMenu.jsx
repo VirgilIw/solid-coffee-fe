@@ -21,7 +21,7 @@ function AdminDashboardMenu() {
     { id: 5, name: "Keluar", icon: LogoutIcon},
   ];
   return (
-    <div className="p-5">
+    <div className="hidden md:block md:p-5">
       <div className="flex flex-col items-center justify-center">
         {menu.map((item) => (
           <button 
