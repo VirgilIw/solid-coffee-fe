@@ -10,6 +10,7 @@ import OrderLayout from "./components/layouts/OrderLayout";
 import DetailOrder from "./pages/DetailOrder";
 import AdminDashboard from "./pages/AdminDashboard";
 import DashboardLayout from "./components/layouts/DashboardLayout";
+import HistoryOrder from "./pages/HIstoryOrder";
 
 export default function Router() {
   return (
@@ -28,6 +29,7 @@ export default function Router() {
       </Route>
       <Route path="order" element={<OrderLayout />}>
         <Route path="detail" element={<DetailOrder/>}/>
+        <Route path="history" element={<HistoryOrder/>} />
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
