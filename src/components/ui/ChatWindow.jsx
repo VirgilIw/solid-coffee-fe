@@ -1,13 +1,14 @@
 import React from 'react';
 import Testimoni1 from "../../assets/home/Testimoni1.png";
+import Send from "../../assets/home/send-one.svg"
 
 export default function ChatWindow({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 w-[90%] sm:w-[400px] bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden z-[70] flex flex-col border border-gray-100 animate-in fade-in slide-in-from-bottom-5 duration-300">
+    <div className="fixed bottom-24 right-6 w-[90%] sm:w-100 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden z-70 flex flex-col border border-gray-100 animate-in fade-in slide-in-from-bottom-5 duration-300">
       {/* Orange Header Strip */}
-      <div className="h-6 bg-[#FF8906] w-full"></div>
+      <div className="h-6 bg-brand-orange w-full"></div>
       
       {/* Header Info */}
       <div className="p-5 flex items-center justify-between border-b border-gray-50">
@@ -18,7 +19,7 @@ export default function ChatWindow({ isOpen, onClose }) {
           </div>
           <div>
             <h4 className="font-bold text-xl text-[#0B0909]">Ghaluh Wizard</h4>
-            <p className="text-[#FF8906] text-sm font-semibold mt-0.5">Admin Support</p>
+            <p className="text-brand-orange text-sm font-semibold mt-0.5">Admin Support</p>
           </div>
         </div>
         <button onClick={onClose} className="text-gray-300 hover:text-black transition-colors p-2">
@@ -27,7 +28,7 @@ export default function ChatWindow({ isOpen, onClose }) {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 p-6 space-y-6 max-h-[450px] overflow-y-auto bg-white">
+      <div className="flex-1 p-6 space-y-6 max-h-112.5 overflow-y-auto bg-white">
         {/* Message Received */}
         <div className="flex gap-3 max-w-[90%]">
           <img src={Testimoni1} alt="Admin avatar" className="w-8 h-8 rounded-full object-cover shrink-0 self-start mt-1" />
@@ -50,13 +51,11 @@ export default function ChatWindow({ isOpen, onClose }) {
           <input 
             type="text" 
             placeholder="Masukan Pesan Anda" 
-            className="w-full bg-white border border-gray-200 rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:ring-4 focus:ring-brand-orange/10 border-gray-100 transition-all placeholder:text-gray-400"
+            className="w-full bg-white border border-gray rounded-xl px-5 py-3.5 text-sm focus:outline-none focus:ring-4 focus:ring-brand-orange/10 border-gray-100 transition-all placeholder:text-gray-400"
           />
         </div>
         <button className="bg-brand-orange p-3.5 rounded-xl shadow-lg shadow-brand-orange/30 hover:scale-105 active:scale-95 transition-all group shrink-0">
-          <svg className="w-6 h-6 text-white transform rotate-45 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-          </svg>
+         <img src={Send} alt="Send Icon" />
         </button>
       </div>
     </div>

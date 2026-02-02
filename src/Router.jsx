@@ -6,10 +6,14 @@ import ProductLayout from "./components/layouts/ProductLayout";
 import Product from "./pages/Product";
 import Register from "./pages/Register";
 import { ForgotPassword } from "./pages/ForgotPassword";
+import OrderLayout from "./components/layouts/OrderLayout";
+import DetailOrder from "./pages/DetailOrder";
 import AdminDashboard from "./pages/AdminDashboard";
 import DashboardLayout from "./components/layouts/DashboardLayout";
-import AdminDashboardProduct from "./pages/AdminDashboardProduct";
-import AdminDashboardOrder from "./pages/AdminDashboardOrder";
+import HistoryOrder from "./pages/HistoryOrder";
+import AdminUserlist from "./pages/AdminUserlist";
+import ProductDetail from "./pages/ProductDetail";
+import CheckoutProduct from "./pages/CheckoutProduct";
 
 export default function Router() {
   return (
@@ -21,12 +25,17 @@ export default function Router() {
       <Route path="dashboard" element={<DashboardLayout/>}>
           <Route path="admin">
             <Route index element={<AdminDashboard />} />
-            <Route path="product-list" element={<AdminDashboardProduct />} />
-            <Route path="order-list" element={<AdminDashboardOrder />} />
+            <Route path="users-list" element={<AdminUserlist/>} />
           </Route>
         </Route>
       <Route path="product" element={<ProductLayout />}>
         <Route index element={<Product />} />
+        <Route path="detail-product" element={<ProductDetail />} />
+        <Route path="checkout-product" element={<CheckoutProduct />} />
+      </Route>
+      <Route path="order" element={<OrderLayout />}>
+        <Route path="detail" element={<DetailOrder/>}/>
+        <Route path="history" element={<HistoryOrder/>} />
       </Route>
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />

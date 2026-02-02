@@ -1,20 +1,32 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts, setPage } from "../redux/slices/product.slice";
+import ProductList from "../components/ui/product/ProductList";
 import BgCoffee from "../assets/product/bg-coffee.jpg";
 import ArrowLeft from "../assets/home/arrow-left.png";
 import ArrowRight from "../assets/home/arrow-right.png";
 import Animate from "../assets/product/animate.svg";
 import Animate2 from "../assets/product/animate2.svg";
-import FoodImage1 from "../assets/home/Food-1.png";
-import Chart from "../assets/home/ShoppingCart.svg";
-import Star from "../assets/home/Star.png";
 import Filter from "../assets/product/Filter.svg";
 
+
 export default function Product() {
+  const dispatch = useDispatch();
+  const { items: products, isLoading, pageInfo } = useSelector((state) => state.product);
+
   const [minPrice, setMinPrice] = useState(10000);
   const [maxPrice, setMaxPrice] = useState(80000);
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState(["Coffee"]);
   const [selectedSort, setSelectedSort] = useState(["Flash sale"]);
+
+  useEffect(() => {
+    dispatch(fetchProducts({ page: pageInfo.currentPage, limit: 6 }));
+  }, [dispatch, pageInfo.currentPage]);
+
+  const handlePageChange = (newPage) => {
+    dispatch(setPage(newPage));
+  };
 
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -394,76 +406,20 @@ export default function Product() {
 
           {/* Product Grid Area */}
           <div className="flex-1">
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-              {[1, 2, 3, 4, 5, 6].map((item) => (
-                <div
-                  key={item}
-                  className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
-                >
-                  {/* Image Area */}
-                  <div className="relative h-36 w-full overflow-hidden sm:h-56 lg:h-72">
-                    <img
-                      src={FoodImage1}
-                      alt="Product Image"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-
-                  {/* Card Body */}
-                  <div className="flex flex-1 flex-col p-3 sm:p-5 lg:p-8">
-                    <h3 className="truncate text-sm font-bold text-[#0B0909] sm:text-xl lg:text-2xl">
-                      Hazelnut Latte
-                    </h3>
-                    <p className="mt-1 line-clamp-2 text-[10px] leading-relaxed text-[#4F5665] opacity-70 sm:text-sm">
-                      You can explore the menu that we provide with fun and have
-                      their own taste and make your day better.
-                    </p>
-
-                    <div className="mt-2 flex items-center gap-0.5 sm:gap-1">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <img
-                          key={s}
-                          src={Star}
-                          alt="Star"
-                          className="h-2.5 w-2.5 sm:h-4 sm:w-4"
-                        />
-                      ))}
-                      <span className="ml-1 text-[10px] font-bold text-[#4B5563] sm:ml-2 sm:text-sm">
-                        5.0
-                      </span>
-                    </div>
-
-                    <div className="mt-2">
-                      <p className="text-brand-orange text-sm font-extrabold sm:text-xl lg:text-2xl">
-                        IDR 20.000
-                      </p>
-                    </div>
-
-                    {/* Buttons Area */}
-                    <div className="mt-4 flex flex-col gap-2">
-                      <button className="bg-brand-orange w-full rounded-lg py-2 text-center text-[10px] font-bold text-white transition-all duration-300 hover:bg-[#e67e00] sm:text-base">
-                        Buy
-                      </button>
-                      <button className="border-brand-orange hover:bg-brand-orange/5 group/cart flex w-full items-center justify-center rounded-lg border py-2 transition-all duration-300">
-                        <img
-                          src={Chart}
-                          alt="Cart"
-                          className="filter-brand-orange h-4 w-4 sm:h-6 sm:w-6"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ProductList
+              isLoading={isLoading}
+              products={products}
+              onRetry={() => dispatch(fetchProducts({ page: 1, limit: 6 }))}
+            />
 
             {/* Pagination Section */}
             <div className="mt-12 mb-8 flex items-center justify-center gap-3 lg:justify-start">
-              {[1, 2, 3, 4].map((page) => (
+              {Array.from({ length: pageInfo.totalPage }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
+                  onClick={() => handlePageChange(page)}
                   className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold shadow-sm transition-all sm:h-12 sm:w-12 sm:text-base ${
-                    page === 1
+                    page === pageInfo.currentPage
                       ? "bg-brand-orange shadow-brand-orange/20 text-white"
                       : "bg-[#E8E8E8] text-[#4F5665] hover:bg-gray-200"
                   }`}
@@ -471,7 +427,11 @@ export default function Product() {
                   {page}
                 </button>
               ))}
-              <button className="bg-brand-orange shadow-brand-orange/20 flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-all hover:scale-110 sm:h-12 sm:w-12">
+              <button 
+                onClick={() => pageInfo.currentPage < pageInfo.totalPage && handlePageChange(pageInfo.currentPage + 1)}
+                className="bg-brand-orange shadow-brand-orange/20 flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-all hover:scale-110 sm:h-12 sm:w-12 disabled:opacity-50"
+                disabled={pageInfo.currentPage === pageInfo.totalPage}
+              >
                 <img src={ArrowRight} alt="Next" className="h-4 w-4" />
               </button>
             </div>

@@ -3,7 +3,7 @@ import Navbar from "../ui/product/navbar";
 import Footer from "../ui/Footer";
 import ScrollToTop from "../ui/ScrollToTop";
 
-export default function ProductLayout() {
+export default function OrderLayout() {
   return (
     <>
       <ScrollToTop />

@@ -1,5 +1,5 @@
 import React from 'react'
-import UserListHero from './UserListHero'
+import InserUser from './InserUser'
 import UserListContent from './UserListContent'
 
 function UserlistMenu() {
@@ -7,7 +7,7 @@ function UserlistMenu() {
     <div className='p-5'>
       <p>userlist</p>
       <UserListHero/>
-      <UserListContent/>
+      <InserUser/>
     </div>
   )
 }
