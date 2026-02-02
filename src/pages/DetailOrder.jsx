@@ -1,3 +1,5 @@
+import { useState } from "react"
+import Rating from "../components/ui/product/Rating"
 import Profile from "../assets/Order/Profile.svg"
 import Location from "../assets/Order/Location.svg"
 import PhoneCall from "../assets/Order/PhoneCall.svg"
@@ -7,6 +9,8 @@ import Circle from "../assets/Order/Circle.svg"
 import FoodImage from "../assets/home/Food-1.png"
 
 export default function DetailOrder() {
+  const [isRatingOpen, setIsRatingOpen] = useState(false)
+
   return (
     <>
       <section className='py-8 px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 max-w-7xl mx-auto'>
@@ -72,10 +76,17 @@ export default function DetailOrder() {
                   <p className="flex items-center gap-2">Ice <span className="opacity-50">|</span></p>
                   <p>Dine In</p>
                 </div>
-                <div className="flex items-center gap-2 mt-4">
-                  <p className="text-[#D00000] line-through text-xs">IDR 40.000</p>
-                  <p className="text-orange-500 text-lg sm:text-xl font-bold">IDR 20.000</p>
+
+                <div className="flex flex-col items-start sm:flex-row justify-between mt-4">
+                  <div className="flex items-center gap-2">
+                    <p className="text-[#D00000] line-through text-xs">IDR 40.000</p>
+                    <p className="text-orange-500 text-lg sm:text-xl font-bold">IDR 20.000</p>
+                  </div>
+                  <p 
+                    onClick={() => setIsRatingOpen(!isRatingOpen)}
+                    className="text-white border-2 mt-2 border-brand-orange rounded-[5px] py-1.5 px-6 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-sm">Rating</p>
                 </div>
+                <Rating isOpen={isRatingOpen} onClose={() => setIsRatingOpen(false)}/>
               </div>
             </div>
  
@@ -96,10 +107,17 @@ export default function DetailOrder() {
                   <p className="flex items-center gap-2">Ice <span className="opacity-50">|</span></p>
                   <p>Dine In</p>
                 </div>
-                <div className="flex items-center gap-2 mt-4">
-                  <p className="text-[#D00000] line-through text-xs">IDR 40.000</p>
-                  <p className="text-orange-500 text-lg sm:text-xl font-bold">IDR 20.000</p>
+
+                <div className="flex flex-col sm:flex-row items-start justify-between mt-4">
+                  <div className="flex items-center gap-2">
+                    <p className="text-[#D00000] line-through text-xs">IDR 40.000</p>
+                    <p className="text-orange-500 text-lg sm:text-xl font-bold">IDR 20.000</p>
+                  </div>
+                  <p 
+                    onClick={() => setIsRatingOpen(!isRatingOpen)}
+                    className="text-white border-2 mt-2 border-brand-orange rounded-[5px] py-1.5 px-6 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-sm">Rating</p>
                 </div>
+                <Rating isOpen={isRatingOpen} onClose={() => setIsRatingOpen(false)}/>
               </div>
             </div>
           </div>

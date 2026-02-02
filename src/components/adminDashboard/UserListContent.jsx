@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import PlusIcon from "../../assets/adminDashborad/Plus.svg"
 import Filter from "../../assets/adminDashborad/Filter.svg"
 import InserUser from "./InserUser"
+import UpdateUser from './UpdateUser'
 import Union from "../../assets/adminDashborad/Union.svg"
 import Search from "../../assets/adminDashborad/Search.svg"
 import Pencil from "../../assets/adminDashborad/Pencil.svg"
@@ -15,6 +16,7 @@ import User5 from "../../assets/adminDashborad/User5.jpg"
 
 function UserListContent() {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false)
 
   const users = [
     { id: 1, name: "Eleanor Pena", phone: "(205) 555-0100", address: "3517 W. Gray St. Utica, Pennsylvania 57867", email: "cikaracak@gmail.com", img: User1 },
@@ -83,10 +85,9 @@ function UserListContent() {
                     <td className="p-3 cursor-pointer">{user.email}</td>
                     <td className="p-3">
                       <div className="flex justify-center gap-3">
-                        <button className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-[#D3AD6A33]">
-                          <img src={Union} alt="Detail" />
-                        </button>
-                        <button className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-[#FF890633]">
+                        <button 
+                          onClick={() => setIsUpdateOpen(true)}
+                          className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-[#FF890633]">
                           <img src={Pencil} alt="Edit" />
                         </button>
                         <button className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-[#D0000033]">
@@ -124,6 +125,7 @@ function UserListContent() {
       
       {/* Insert User Modal */}
       <InserUser isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <UpdateUser isOpen={isUpdateOpen} onClose={() => setIsUpdateOpen(false)}/>
 
     </>
   )
