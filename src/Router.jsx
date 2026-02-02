@@ -13,6 +13,7 @@ import DashboardLayout from "./components/layouts/DashboardLayout";
 import HistoryOrder from "./pages/HistoryOrder";
 import AdminUserlist from "./pages/AdminUserlist";
 import ProductDetail from "./pages/ProductDetail";
+import CheckoutProduct from "./pages/CheckoutProduct";
 
 export default function Router() {
   return (
@@ -30,6 +31,7 @@ export default function Router() {
       <Route path="product" element={<ProductLayout />}>
         <Route index element={<Product />} />
         <Route path="detail-product" element={<ProductDetail />} />
+        <Route path="checkout-product" element={<CheckoutProduct />} />
       </Route>
       <Route path="order" element={<OrderLayout />}>
         <Route path="detail" element={<DetailOrder/>}/>
