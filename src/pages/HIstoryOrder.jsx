@@ -76,7 +76,7 @@ export default function HistoryOrder() {
                                 <div className="flex flex-col">
                                     <p className="flex gap-2 text-[#4F5665] text-sm"><img src={Glass} alt="Icon" className="w-4 h-4" /> No. Order</p>
                                     <p className="font-bold mt-1 text-base">{order.id}</p>
-                                    <button className="text-brand-orange text-sm font-medium hover:underline text-left mt-1 hidden md:block">View Order Detail</button>
+                                    <button className="text-brand-orange hover:text-[#ffad4e] text-sm font-medium underline text-left mt-1 hidden md:block">View Order Detail</button>
                                 </div>
                                 <div className="flex flex-col">
                                     <p className="flex gap-2 text-[#4F5665] text-sm"><img src={Calendar2} alt="Icon" className="w-4 h-4" /> Date</p>
@@ -128,7 +128,7 @@ export default function HistoryOrder() {
                     <p className="text-[#4F5665] text-sm leading-6 mb-6">
                         if your unable to find answer or find your product quickly, please describe your problem and tell us. we will give you solution.
                     </p>
-                    <button className="bg-brand-orange text-white px-6 py-3 rounded-md font-medium hover:bg-opacity-90 transition w-full">Send Message</button>
+                    <button className="bg-brand-orange text-white px-6 py-3 rounded-md font-medium hover:bg-[#ffad4e] transition w-full">Send Message</button>
                 </div> 
             </div>
         </div>
