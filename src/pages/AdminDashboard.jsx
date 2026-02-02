@@ -1,6 +1,3 @@
-import React from 'react'
-import DashboardMenu from '../components/adminDashboard/AdminDashboardMenu'
-import UserlistMenu from '../components/adminDashboard/UserlistMenu'
 import AdminDashboardMenu from '../components/adminDashboard/AdminDashboardMenu'
 import ProductChart from '../components/adminDashboard/ProductChart'
 

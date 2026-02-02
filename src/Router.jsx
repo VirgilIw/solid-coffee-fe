@@ -8,6 +8,8 @@ import Register from "./pages/Register";
 import { ForgotPassword } from "./pages/ForgotPassword";
 import AdminDashboard from "./pages/AdminDashboard";
 import DashboardLayout from "./components/layouts/DashboardLayout";
+import AdminDashboardProduct from "./pages/AdminDashboardProduct";
+import AdminDashboardOrder from "./pages/AdminDashboardOrder";
 
 export default function Router() {
   return (
@@ -19,6 +21,8 @@ export default function Router() {
       <Route path="dashboard" element={<DashboardLayout/>}>
           <Route path="admin">
             <Route index element={<AdminDashboard />} />
+            <Route path="product-list" element={<AdminDashboardProduct />} />
+            <Route path="order-list" element={<AdminDashboardOrder />} />
           </Route>
         </Route>
       <Route path="product" element={<ProductLayout />}>

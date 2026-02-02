@@ -22,9 +22,10 @@ import Calendar from "../../assets/adminDashborad/Calendar.svg";
 import CustomToolTip from "./CustomToolTip";
 
 function ProductChart() {
+  const [selectedRange, setSelectedRange] = useState("");
+
   const handleChangeSales = (event) => {
     const newValue = event.target.value;
-    setSelectedRange(newValue);
     setSelectedRange(newValue);
     updateUrlQueryParam("sales-range", "");
     updateUrlQueryParam("sales-range", newValue);
@@ -32,7 +33,6 @@ function ProductChart() {
 
   const handleChangeProduct = (event) => {
     const newValue = event.target.value;
-    setSelectedRange(newValue);
     setSelectedRange(newValue);
     updateUrlQueryParam("product-range", "");
     updateUrlQueryParam("product-range", newValue);
@@ -93,8 +93,6 @@ function ProductChart() {
     (total, item) => total + item.penjualan,
     0,
   );
-
-  const [selectedRange, setSelectedRange] = useState("");
 
   const generateWeeklyRanges = () => {
     const ranges = [];
