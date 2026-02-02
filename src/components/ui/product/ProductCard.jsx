@@ -1,7 +1,7 @@
 import React from "react";
 import FoodImage1 from "../../../assets/home/Food-1.png";
 import Chart from "../../../assets/home/ShoppingCart.svg";
-import Star from "../../../assets/home/Star.png";
+import Star from "../../../assets/home/Star.svg";
 
 export default function ProductCard({ product }) {
   return (

@@ -1,4 +1,4 @@
-import Star from "../assets/home/Star.png";
+import Star from "../assets/home/Star.svg";
 import ArrowRight from "../assets/home/arrow-right.png";
 import FoodImage1 from "../assets/home/Food-1.png";
 import Chart from "../assets/images/ShoppingCart.svg";
