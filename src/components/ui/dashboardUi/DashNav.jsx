@@ -153,7 +153,7 @@ function DashNav() {
           <div className="flex flex-col items-center justify-center">
             {menu.map((item) => (
               <button
-                isActive={activeMenu === item.id}
+                key={item.id}
                 onClick={() => handleMenuClick(item.id)}
                 className={`cursor-pointer transition-all ${activeMenu == item.id ? "bg-brand-orange" : ""} flex w-full items-center gap-3 rounded-lg border-0 p-2 pl-15 text-white`}
               >
