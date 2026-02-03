@@ -19,6 +19,7 @@ export default function Profile() {
     oldPassword: "",
     newPassword: "",
   });
+  const [successMsg, setSuccesMsg] = React.useState("");
 
   const toggleEye = (key) => {
     setShow((prev) => ({
@@ -38,7 +39,7 @@ export default function Profile() {
 
       const imageUrl = URL.createObjectURL(file);
       setPreview(imageUrl);
-      setAvatar(imageUrl); // simpan sebagai avatar terbaru
+      setAvatar(imageUrl);
     }
   };
 
@@ -51,22 +52,66 @@ export default function Profile() {
     setErrMessage("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    if (isPass && formData.newPassword.length < 8) {
-      setErrMessage("Password at least 8 characters");
-      return;
-    }
 
-    setFormData({
-      fullName: formData.fullName,
-      email: formData.email,
-      phone: "",
-      address: "",
-      oldPassword: "",
-      newPassword: "",
-    });
+    try {
+      const token = localStorage.getItem("token");
+
+      // ===== UPDATE PROFILE DATA =====
+      const form = new FormData();
+      form.append("fullname", formData.fullName);
+      form.append("phone", formData.phone);
+      form.append("address", formData.address);
+
+      // kalau pilih foto baru
+      const fileInput = document.getElementById("profile");
+      if (fileInput.files[0]) {
+        form.append("photo", fileInput.files[0]);
+      }
+
+      const resProfile = await fetch("http://192.168.50.221:8080/user/", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: form,
+      });
+
+      const dataProfile = await resProfile.json();
+
+      if (!resProfile.ok) {
+        throw new Error(dataProfile.message);
+      }
+
+      // ===== UPDATE PASSWORD (kalau diaktifkan) =====
+      if (isPass) {
+        const resPass = await fetch(
+          "http://192.168.50.221:8080/user/password/",
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              old_password: formData.oldPassword,
+              new_password: formData.newPassword,
+            }),
+          },
+        );
+
+        const dataPass = await resPass.json();
+
+        if (!resPass.ok) {
+          throw new Error(dataPass.message);
+        }
+      }
+
+      setSuccesMsg("Update Profile Success 🎉");
+    } catch (err) {
+      setErrMessage(err.message);
+    }
   };
 
   React.useEffect(() => {
@@ -77,10 +122,36 @@ export default function Profile() {
 
   React.useEffect(() => {
     const url = "http://192.168.50.221:8080/user/";
+    const token = localStorage.getItem("token");
+
     (async () => {
-      const res = await fetch(url);
-      const req = await res.json();
-      console.log(req);
+      try {
+        const res = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          "Content-type": "application/json",
+        });
+
+        if (!res.ok) {
+          throw new Error("Unauthorized");
+        }
+
+        const data = await res.json();
+        console.log(data);
+        // mapping data dari backend ke state
+        setFormData((prev) => ({
+          ...prev,
+          fullName: data.data.fullname,
+          email: data.data.email,
+          phone: data.data.phone,
+          address: data.data.address,
+        }));
+
+        setAvatar(data.data.avatar);
+      } catch (err) {
+        console.error(err.message);
+      }
     })();
   }, []);
 
@@ -90,6 +161,11 @@ export default function Profile() {
         <h1 className="mb-8 flex justify-center text-3xl font-semibold text-gray-800 lg:relative lg:top-0 lg:justify-start">
           Profile
         </h1>
+        {successMsg && (
+          <div className="fixed top-6 right-6 z-50 flex items-center gap-2 rounded-lg bg-green-500 px-6 py-3 text-white shadow-lg">
+            {successMsg}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* LEFT CARD - Profile Info */}
