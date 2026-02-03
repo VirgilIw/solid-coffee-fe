@@ -14,8 +14,12 @@ export default function ProductList({ isLoading, products, onRetry }) {
   if (products.length > 0) {
     return (
       <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
-        {products.map((item) => (
-          <ProductCard key={item.id} product={item} />
+        {products.map((item, index) => (
+          <ProductCard 
+            key={item.id} 
+            product={item}
+            index={index}
+          />
         ))}
       </div>
     );

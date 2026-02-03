@@ -2,34 +2,28 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchProducts = createAsyncThunk(
     "product/fetchProducts",
-    async ({ page = 1, limit = 6, search = "", category = [], sortBy = "", minPrice = "", maxPrice = "" }, { rejectWithValue }) => {
+    async ({ page = 1, title = "", category = [], min = "", max = "", id = "" }, { rejectWithValue }) => {
         try {
             const params = new URLSearchParams();
             params.append("page", page);
-            params.append("limit", limit);
 
-            if (search) {
-                params.append("search", search);
-                params.append("q", search);
-                params.append("name", search);
+            if (title) {
+                params.append("title", title);
             }
             if (category && category.length > 0) {
                 category.forEach(cat => params.append("category", cat));
             }
-            if (sortBy) {
-                params.append("sort", sortBy.toLowerCase());
-                params.append("sortBy", sortBy.toLowerCase());
+            if (min) {
+                params.append("min", min);
             }
-            if (minPrice) {
-                params.append("minPrice", minPrice);
-                params.append("min_price", minPrice);
+            if (max) {
+                params.append("max", max);
             }
-            if (maxPrice) {
-                params.append("maxPrice", maxPrice);
-                params.append("max_price", maxPrice);
+            if (id) {
+                params.append("id", id);
             }
 
-            const response = await fetch(`http://192.168.50.221:8080/products?${params.toString()}`);
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/products?${params.toString()}`);
 
             if (!response.ok) {
                 throw new Error("Failed Get Data Product");
@@ -69,7 +63,13 @@ const productSlice = createSlice({
             .addCase(fetchProducts.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.items = action.payload.data || [];
-                state.pageInfo = action.payload.pageInfo || state.pageInfo;
+                if (action.payload.meta) {
+                    state.pageInfo = {
+                        currentPage: action.payload.meta.page,
+                        totalPage: action.payload.meta.total_page,
+                        totalData: action.payload.meta.total_data || 0,
+                    };
+                }
             })
             .addCase(fetchProducts.rejected, (state, action) => {
                 state.isLoading = false;

@@ -1,15 +1,22 @@
 import React from "react";
+import { Link } from "react-router";
 import FoodImage1 from "../../../assets/home/Food-1.png";
 import Chart from "../../../assets/home/ShoppingCart.svg";
 import Star from "../../../assets/home/Star.svg";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, index }) {
+  const isRecommended = index < 4;
+  
   return (
     <div className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-      {/* Image Area */}
       <div className="relative h-36 w-full overflow-hidden sm:h-56 lg:h-72">
+        {isRecommended && (
+          <div className="absolute top-2 left-2 z-10 rounded-full bg-[#D00000] px-3 py-1 text-[8px] font-black italic text-white sm:top-4 sm:left-4 sm:px-4 sm:text-xs">
+            RECOMMENDED
+          </div>
+        )}
         <img
-          src={product.image || FoodImage1}
+          src={product.image_products}
           alt={product.name}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -35,20 +42,18 @@ export default function ProductCard({ product }) {
             />
           ))}
           <span className="ml-1 text-[10px] font-bold text-[#4B5563] sm:ml-2 sm:text-sm">
-            5.0
+            {Number(product.rating_product || product.rating || 0).toFixed(1)}
           </span>
         </div>
 
+
         {product.discount > 0 ? (
-          <div className="flex items-center gap-2 mt-4">
-            <p className="text-[#D00000] line-through text-xs">
+          <div className="mt-2">
+            <p className="text-[#D00000] line-through text-xs sm:text-sm">
               IDR {Number(product.price).toLocaleString()}
             </p>
-            <p className="text-orange-500 text-lg sm:text-xl font-bold">
-              IDR{" "}
-              {Number(
-                product.price - product.price * product.discount
-              ).toLocaleString()}
+            <p className="text-brand-orange text-sm font-extrabold sm:text-xl lg:text-2xl">
+              IDR {Number(product.price - (product.price * (product.discount / 100))).toLocaleString()}
             </p>
           </div>
         ) : (
@@ -59,9 +64,9 @@ export default function ProductCard({ product }) {
 
         {/* Buttons Area */}
         <div className="mt-4 flex flex-col gap-2">
-          <button className="bg-brand-orange w-full rounded-lg py-2 text-center text-[10px] font-bold text-white transition-all duration-300 hover:bg-[#e67e00] sm:text-base">
+          <Link to={`/product/detail-product/${product.id}`} className="bg-brand-orange w-full rounded-lg py-2 text-center text-[10px] font-bold text-white transition-all duration-300 hover:bg-[#e67e00] sm:text-base">
             Buy
-          </button>
+          </Link>
           <button className="border-brand-orange hover:bg-brand-orange/5 group/cart flex w-full items-center justify-center rounded-lg border py-2 transition-all duration-300">
             <img
               src={Chart}

@@ -16,9 +16,9 @@ export default function Product() {
   const { items: products, isLoading, pageInfo } = useSelector((state) => state.product);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [minPrice, setMinPrice] = useState(Number(searchParams.get("min_price")) || 0);
-  const [maxPrice, setMaxPrice] = useState(Number(searchParams.get("max_price")) || 100000);
-  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [minPrice, setMinPrice] = useState(Number(searchParams.get("min")) || 0);
+  const [maxPrice, setMaxPrice] = useState(Number(searchParams.get("max")) || 100000);
+  const [title, setTitle] = useState(searchParams.get("title") || "");
   const [selectedCategories, setSelectedCategories] = useState(
     searchParams.get("category") ? searchParams.get("category").split(",") : []
   );
@@ -27,12 +27,10 @@ export default function Product() {
   useEffect(() => {
     const filters = {
       page: Number(searchParams.get("page")) || pageInfo.currentPage,
-      limit: 6,
-      search: searchParams.get("search") || "",
+      title: searchParams.get("title") || "",
       category: searchParams.get("category") ? searchParams.get("category").split(",") : [],
-      sortBy: searchParams.get("sort") || "",
-      minPrice: searchParams.get("min_price") || "",
-      maxPrice: searchParams.get("max_price") || "",
+      min: searchParams.get("min") || "",
+      max: searchParams.get("max") || "",
     };
     dispatch(fetchProducts(filters));
   }, [dispatch, pageInfo.currentPage, searchParams]);
@@ -40,11 +38,11 @@ export default function Product() {
   const handleApplyFilter = () => {
     const params = new URLSearchParams();
     params.set("page", "1");
-    if (search) params.set("search", search);
+    if (title) params.set("title", title);
     if (selectedCategories.length > 0) params.set("category", selectedCategories.join(","));
     if (selectedSort) params.set("sort", selectedSort);
-    params.set("min_price", minPrice.toString());
-    params.set("max_price", maxPrice.toString());
+    params.set("min", minPrice.toString());
+    params.set("max", maxPrice.toString());
     
     setSearchParams(params);
     dispatch(setPage(1));
@@ -108,7 +106,7 @@ export default function Product() {
   const handleReset = () => {
     setMinPrice(0);
     setMaxPrice(100000);
-    setSearch("");
+    setTitle("");
     setSelectedCategories([]);
     setSelectedSort("");
     setSearchParams({});
@@ -137,8 +135,8 @@ export default function Product() {
           <div className="relative flex-1">
             <input
               type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleApplyFilter()}
               placeholder="Find Product"
               className="h-10 w-full rounded-lg border border-gray-100 bg-white px-4 pl-10 text-sm shadow-sm focus:outline-none"
@@ -297,8 +295,8 @@ export default function Product() {
                 <div className="relative">
                   <input
                     type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleApplyFilter()}
                     placeholder="Search Your Product"
                     className="focus:ring-brand-orange h-12 w-full rounded-lg bg-white px-4 text-black transition-all outline-none placeholder:text-gray-400 focus:ring-2"
@@ -306,7 +304,7 @@ export default function Product() {
                 </div>
               </div>
 
-              {/* Category ... (rest of sidebar content) */}
+              {/* Category */}
               <div className="mb-10">
                 <p className="mb-5 text-sm font-bold tracking-widest uppercase opacity-60">
                   Category
@@ -451,7 +449,7 @@ export default function Product() {
             <ProductList
               isLoading={isLoading}
               products={products}
-              onRetry={() => dispatch(fetchProducts({ page: 1, limit: 6 }))}
+              onRetry={() => dispatch(fetchProducts({ page: 1 }))}
             />
 
             {/* Pagination Section */}
