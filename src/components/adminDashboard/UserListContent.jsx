@@ -1,30 +1,36 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUsers } from '../../redux/slices/user.slice'
 import PlusIcon from "../../assets/adminDashborad/Plus.svg"
 import Filter from "../../assets/adminDashborad/Filter.svg"
 import InserUser from "./InserUser"
 import UpdateUser from './UpdateUser'
-import Union from "../../assets/adminDashborad/Union.svg"
-import Search from "../../assets/adminDashborad/Search.svg"
 import Pencil from "../../assets/adminDashborad/Pencil.svg"
 import Delete from "../../assets/adminDashborad/Delete.svg"
-import User1 from "../../assets/adminDashborad/User1.jpg"
-import User2 from "../../assets/adminDashborad/User2.jpg"
-import User3 from "../../assets/adminDashborad/User3.jpg"
-import User4 from "../../assets/adminDashborad/User4.jpg"
-import User5 from "../../assets/adminDashborad/User5.jpg"
-
+import UserIcon from "../../assets/adminDashborad/UserIcon.svg"
+import DeleteUser from '../ui/dashboardUi/DeleteUser'
 
 function UserListContent() {
+  const dispatch = useDispatch()
+  const { items: users, isLoading, error } = useSelector((state) => state.user)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isUpdateOpen, setIsUpdateOpen] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
 
-  const users = [
-    { id: 1, name: "Eleanor Pena", phone: "(205) 555-0100", address: "3517 W. Gray St. Utica, Pennsylvania 57867", email: "cikaracak@gmail.com", img: User1 },
-    { id: 2, name: "Ronald Richards", phone: "(205) 555-0100", address: "1901 Thornridge Cir. Shiloh, Hawaii 81063", email: "cikaracak@gmail.com", img: User2 },
-    { id: 3, name: "Darlene Robertson", phone: "(209) 555-0104", address: "4140 Parker Rd. Allentown, New Mexico 31134", email: "cikaracak@gmail.com", img: User3 },
-    { id: 4, name: "Kristin Watson", phone: "(252) 555-0126", address: "2972 Westheimer Rd. Santa Ana, Illinois 85486", email: "cikaracak@gmail.com", img: User4 },
-    { id: 5, name: "Dianne Russell", phone: "(201) 555-0124", address: "4517 Washington Ave. Manchester, Kentucky 39495", email: "cikaracak@gmail.com", img: User5 },
-  ]
+  const handleEditClick = (user) => {
+    setSelectedUser(user)
+    setIsUpdateOpen(true)
+  }
+
+  const handleDeleteClick = (user) => {
+    setSelectedUser(user)
+    setIsDeleteOpen(true)
+  }
+
+  useEffect(() => {
+    dispatch(fetchUsers())
+  }, [dispatch])
 
   return (
     <>
@@ -69,34 +75,54 @@ function UserListContent() {
                 </tr>
               </thead>
               <tbody className="text-[#4F5665] text-sm">
-                {users.map((user) => (
-                  <tr key={user.id} className="border-b border-[#E8E8E8] hover:bg-gray-50 transition-colors">
-                    <td className="p-3 text-center">
-                      <input type="checkbox" className="w-4 h-4 accent-brand-orange cursor-pointer" />
-                    </td>
-                    <td className="p-3">
-                      <div className="w-10 h-10 rounded-md overflow-hidden bg-gray-200">
-                         <img src={user.img} alt={user.name} className="w-full h-full object-cover" />
-                      </div>
-                    </td>
-                    <td className="p-3 font-medium text-black whitespace-nowrap">{user.name}</td>
-                    <td className="p-3 whitespace-nowrap">{user.phone}</td>
-                    <td className="p-3 max-w-xs leading-relaxed">{user.address}</td>
-                    <td className="p-3 cursor-pointer">{user.email}</td>
-                    <td className="p-3">
-                      <div className="flex justify-center gap-3">
-                        <button 
-                          onClick={() => setIsUpdateOpen(true)}
-                          className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-[#FF890633]">
-                          <img src={Pencil} alt="Edit" />
-                        </button>
-                        <button className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-[#D0000033]">
-                          <img src={Delete} alt="Delete" />
-                        </button>
-                      </div>
-                    </td>
+                {isLoading ? (
+                  <tr>
+                    <td colSpan="7" className="p-10 text-center font-medium">Loading...</td>
                   </tr>
-                ))}
+                ) : error ? (
+                  <tr>
+                    <td colSpan="7" className="p-10 text-center font-medium text-red-500">{error}</td>
+                  </tr>
+                ) : !Array.isArray(users) ? (
+                  <tr>
+                    <td colSpan="7" className="p-10 text-center font-medium">Format data tidak valid.</td>
+                  </tr>
+                ) : users.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="p-10 text-center font-medium">No users found.</td>
+                  </tr>
+                ) : (
+                  users.map((user) => (
+                    <tr key={user.id} className="border-b border-[#E8E8E8] hover:bg-gray-50 transition-colors">
+                      <td className="p-3 text-center">
+                        <input type="checkbox" className="w-4 h-4 accent-brand-orange cursor-pointer" />
+                      </td>
+                      <td className="p-3">
+                        <div className="w-10 h-10 rounded-md overflow-hidden bg-gray-200">
+                          <img src={user.photo || UserIcon} alt={user.fullname} className="w-full h-full object-cover" />
+                        </div>
+                      </td>
+                      <td className="p-3 font-medium text-black whitespace-nowrap">{user.fullname}</td>
+                      <td className="p-3 whitespace-nowrap">{user.phone}</td>
+                      <td className="p-3 max-w-xs leading-relaxed">{user.address}</td>
+                      <td className="p-3 cursor-pointer">{user.email}</td>
+                      <td className="p-3">
+                        <div className="flex justify-center gap-3">
+                          <button 
+                            onClick={() => handleEditClick(user)}
+                            className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-[#FF890633]">
+                            <img src={Pencil} alt="Edit" />
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteClick(user)}
+                            className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity bg-[#D0000033]">
+                            <img src={Delete} alt="Delete" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
 
@@ -125,8 +151,23 @@ function UserListContent() {
       
       {/* Insert User Modal */}
       <InserUser isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      <UpdateUser isOpen={isUpdateOpen} onClose={() => setIsUpdateOpen(false)}/>
-
+      <UpdateUser 
+        key={selectedUser?.id}
+        isOpen={isUpdateOpen} 
+        onClose={() => {
+          setIsUpdateOpen(false)
+          setSelectedUser(null)
+        }}
+        user={selectedUser}
+      />
+      <DeleteUser
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false)
+          setSelectedUser(null)
+        }}
+        user={selectedUser}
+      />
     </>
   )
 }

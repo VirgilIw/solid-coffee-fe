@@ -11,6 +11,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import registerReducer from "../redux/slices/register.slice";
 import productReducer from "../redux/slices/product.slice";
+import userReducer from "../redux/slices/user.slice";
 
 const persistConfig = {
   key: "data",
@@ -20,6 +21,7 @@ const persistConfig = {
 const persistedReducer = persistCombineReducers(persistConfig, {
   register: registerReducer,
   product: productReducer,
+  user: userReducer,
 });
 
 const store = configureStore({

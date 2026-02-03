@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CoffeeIcon from "../../../assets/images/coffe-shop.svg";
 import Chart from "../../../assets/home/ShoppingCart.svg";
 import Search from "../../../assets/home/Search.svg";
@@ -133,7 +133,7 @@ function DashNav() {
         <div className="flex flex-col items-center justify-center">
           {menu.map((item) => (
             <button
-              isActive={activeMenu === item.id}
+              key={item.id}
               onClick={() => handleMenuClick(item.id)}
               className={`${activeMenu == item.id ? "bg-brand-orange" : ""} text-white flex w-full pl-15 items-center gap-3 rounded-lg border-0 p-2`}
             >
