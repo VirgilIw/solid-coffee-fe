@@ -1,9 +1,46 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+export const loginThunk = createAsyncThunk(
+  "auth/login",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const API_URL = import.meta.env.VITE_SOLID_API_URL;
+
+      const res = await fetch(`${API_URL}/auth/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message);
+      }
+
+      // simpan token
+      localStorage.setItem("token", data.data.token);
+
+      return data.data;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  },
+);
 
 const initialState = {
-  data: {
-    email: "",
-    // password: "",
+  user: null,
+  getUserStatus: {
+    user: {
+      isLoading: false,
+      isSuccess: false,
+      isFailed: false,
+    },
+  },
+  errors: {
+    data: null,
   },
 };
 
@@ -11,14 +48,37 @@ const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {
-    setLoginData: (prevState, { payload }) => {
-      prevState = payload;
+    signOut: (state) => {
+      state.user = null;
+      state.getUserStatus.user.isSuccess = false;
+      localStorage.removeItem("token");
     },
-    clearLoginData: (prevState) => {
-      prevState.data = { email: "", password: "" };
-    },
+  },
+  extraReducers: (builder) => {
+    return builder.addAsyncThunk(loginThunk, {
+      pending: (prevState) => {
+        prevState.getUserStatus.user.isLoading = true;
+        prevState.getUserStatus.user.isSuccess = false;
+        prevState.getUserStatus.user.isFailed = false;
+      },
+      fulfilled: (prevState, action) => {
+        prevState.getUserStatus.user.isLoading = false;
+        prevState.getUserStatus.user.isSuccess = true;
+        prevState.user = {
+          email: action.meta.arg.email, // dari form login
+          token: action.payload.token,
+        };
+        // console.log("PAYLOAD LOGIN:", payload);
+      },
+      rejected: (prevState, { payload }) => {
+        prevState.getUserStatus.user.isLoading = false;
+        prevState.getUserStatus.user.isFailed = true;
+        prevState.errors.data = payload;
+      },
+    });
   },
 });
 
-export const { setLoginData, clearLoginData } = loginSlice.actions;
+export const { signOut } = loginSlice.actions;
+export const loginAction = { ...loginSlice.actions, loginThunk };
 export default loginSlice.reducer;
