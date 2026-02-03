@@ -13,6 +13,7 @@ import registerReducer from "../redux/slices/register.slice";
 import productReducer from "../redux/slices/product.slice";
 import profileReducer from "../redux/slices/profile.slice";
 import userReducer from "../redux/slices/user.slice";
+import loginReducer from "../redux/slices/login.slice";
 
 const persistConfig = {
   key: "data",
@@ -24,6 +25,7 @@ const persistedReducer = persistCombineReducers(persistConfig, {
   product: productReducer,
   profile: profileReducer,
   user: userReducer,
+  login: loginReducer,
 });
 
 const store = configureStore({
