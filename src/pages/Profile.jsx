@@ -20,6 +20,7 @@ export default function Profile() {
     newPassword: "",
   });
   const [successMsg, setSuccesMsg] = React.useState("");
+  const API_URL = import.meta.env.VITE_SOLID_API_URL;
 
   const toggleEye = (key) => {
     setShow((prev) => ({
@@ -39,7 +40,6 @@ export default function Profile() {
 
       const imageUrl = URL.createObjectURL(file);
       setPreview(imageUrl);
-      setAvatar(imageUrl);
     }
   };
 
@@ -70,7 +70,7 @@ export default function Profile() {
         form.append("photo", fileInput.files[0]);
       }
 
-      const resProfile = await fetch("http://192.168.50.221:8080/user/", {
+      const resProfile = await fetch(`${API_URL}/user/`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -86,20 +86,17 @@ export default function Profile() {
 
       // ===== UPDATE PASSWORD (kalau diaktifkan) =====
       if (isPass) {
-        const resPass = await fetch(
-          "http://192.168.50.221:8080/user/password/",
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              old_password: formData.oldPassword,
-              new_password: formData.newPassword,
-            }),
+        const resPass = await fetch(`${API_URL}/user/password/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-        );
+          body: JSON.stringify({
+            old_password: formData.oldPassword,
+            new_password: formData.newPassword,
+          }),
+        });
 
         const dataPass = await resPass.json();
 
@@ -109,6 +106,7 @@ export default function Profile() {
       }
 
       setSuccesMsg("Update Profile Success 🎉");
+      setTimeout(() => setSuccesMsg(""), 3000);
     } catch (err) {
       setErrMessage(err.message);
     }
@@ -121,7 +119,7 @@ export default function Profile() {
   }, [preview]);
 
   React.useEffect(() => {
-    const url = "http://192.168.50.221:8080/user/";
+    const url = `${API_URL}/user/`;
     const token = localStorage.getItem("token");
 
     (async () => {
@@ -129,8 +127,8 @@ export default function Profile() {
         const res = await fetch(url, {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-type": "application/json",
           },
-          "Content-type": "application/json",
         });
 
         if (!res.ok) {
