@@ -8,12 +8,14 @@ import Register from "./pages/Register";
 import { ForgotPassword } from "./pages/ForgotPassword";
 import OrderLayout from "./components/layouts/OrderLayout";
 import DetailOrder from "./pages/DetailOrder";
-import AdminDashboard from "./pages/AdminDashboard";
+import Admin from "./pages/Admin";
 import DashboardLayout from "./components/layouts/DashboardLayout";
 import HistoryOrder from "./pages/HistoryOrder";
 import AdminUserlist from "./pages/AdminUserlist";
 import ProductDetail from "./pages/ProductDetail";
 import CheckoutProduct from "./pages/CheckoutProduct";
+import AdminProductList from "./pages/AdminProductList";
+import AdminOrderList from "./pages/AdminOrderList";
 import Profile from "./pages/Profile";
 import ProfileLayout from "./components/layouts/ProfileLayout";
 
@@ -26,8 +28,10 @@ export default function Router() {
         </Route>
         <Route path="dashboard" element={<DashboardLayout />}>
           <Route path="admin">
-            <Route index element={<AdminDashboard />} />
-            <Route path="users-list" element={<AdminUserlist />} />
+            <Route index element={<Admin/>} />
+            <Route path="product-list" element={<AdminProductList/>} />
+            <Route path="order-list" element={<AdminOrderList/>} />
+            <Route path="users-list" element={<AdminUserlist/>} />
           </Route>
         </Route>
         <Route path="product" element={<ProductLayout />}>

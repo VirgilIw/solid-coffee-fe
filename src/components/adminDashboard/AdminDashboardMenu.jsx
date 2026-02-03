@@ -6,6 +6,7 @@ import ProductIcon from "../../assets/adminDashborad/ProductIcon.svg";
 import OrderIcon from "../../assets/adminDashborad/Bag.svg";
 import UserIcon from "../../assets/adminDashborad/UserIcon.svg";
 import LogoutIcon from "../../assets/adminDashborad/LogoutIcon.svg";
+import { Link } from "react-router";
 
 function AdminDashboardMenu() {
   const navigate = useNavigate();
@@ -19,20 +20,24 @@ function AdminDashboardMenu() {
 
   const menu = [
     { id: 1, name: "Dashboard", icon: DashboardIcon, path: "/dashboard/admin" },
-    { id: 2, name: "Product", icon: ProductIcon, path: "" },
-    { id: 3, name: "Order", icon: OrderIcon, path: "" },
-    { id: 4, name: "User", icon: UserIcon, path: "/dashboard/admin/users-list" },
+    { id: 2, name: "Product", icon: ProductIcon, path: "/dashboard/admin/product-list" },
+    { id: 3, name: "Order", icon: OrderIcon, path: "/dashboard/admin/order-list" },
+    {
+      id: 4,
+      name: "User",
+      icon: UserIcon,
+      path: "/dashboard/admin/users-list",
+    },
     { id: 5, name: "Keluar", icon: LogoutIcon, path: "/login" },
   ];
   return (
-    <div className="hidden md:block md:p-5 border-r-2 h-screen border-[#E8E8E8]">
+    <div className="hidden h-screen border-r-2 border-[#E8E8E8] md:block md:p-5">
       <div className="flex flex-col items-center justify-center">
         {menu.map((item) => (
-          <button 
+          <button
             key={item.id}
             onClick={() => handleMenuClick(item)}
-            className={`${location.pathname === item.path ? 'bg-brand-orange' : 'bg-white'} 
-            flex items-center gap-3 p-2 w-full border-0 rounded-lg cursor-pointer transition-colors hover:bg-[#ffad4e]`}
+            className={`${location.pathname === item.path ? "bg-brand-orange" : "bg-white"} flex w-full cursor-pointer items-center gap-3 rounded-lg border-0 p-2 transition-colors hover:bg-[#ffad4e]`}
           >
             <div>
               <img src={item.icon} alt={`${item.name}-icon`} />
