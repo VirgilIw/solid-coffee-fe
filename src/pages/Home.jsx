@@ -1,11 +1,11 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchProducts } from "../redux/slices/product.slice"
 import ChatWindow from "../components/ui/ChatWindow"
 import BgCoffee from "../assets/home/bg-cofee-home.jpg"
 import ChatIcon from "../assets/home/ChatCircleDots.png"
-import CheckListIcon from "../assets/home/checklist-Icon.png"
 import BgBarista from "../assets/home/bg-barista.png"
-import FoodImage1 from "../assets/home/Food-1.png"
 import Map from "../assets/home/HugeGlobal.png"
 import Testimoni1 from "../assets/home/Testimoni1.png"
 import Star from "../assets/home/Star.svg"
@@ -15,11 +15,18 @@ import Chart from "../assets/home/ShoppingCart.svg"
 
 export default function Home() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { items: products, isLoading } = useSelector((state) => state.product);
+
+  useEffect(() => {
+    dispatch(fetchProducts({ page: 1 }));
+  }, [dispatch]);
+
+  const featuredProducts = products.slice(0, 4);
 
   return (
     <div>
       <main>
-        {/* ... existing sections ... */}
         <section className="flex flex-col-reverse lg:flex-row min-h-screen">
           {/* Text Content */}
           <article className="bg-[#0B0909] w-full lg:w-1/2 flex flex-col justify-start items-center pt-12 pb-16 lg:pt-48 lg:pb-0 lg:bg-linear-to-b lg:from-[#37393a] lg:to-[#0B0909]">
@@ -101,40 +108,61 @@ export default function Home() {
           </p>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-12 lg:gap-y-32 gap-x-4 sm:gap-x-8 px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 mt-20">
-            {[
-              { id: 1, label: 'BEST SELLER', color: 'bg-red-600' },
-              { id: 2, label: 'LOW PRICE', color: 'bg-red-600' },
-              { id: 3, label: null },
-              { id: 4, label: null }
-            ].map((item) => (
-              <div key={item.id} className="relative flex flex-col items-center group">
-                <div className="w-full relative overflow-hidden rounded-xl shadow-lg transition-transform duration-500 group-hover:scale-105">
-                  <img src={FoodImage1} alt="Food Image" className="w-full h-40 sm:h-72 object-cover"/>
-                  {item.label && (
-                    <div className={`absolute top-2 left-2 ${item.color} text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded-sm`}>
-                      {item.label}
-                    </div>
-                  )}
-                </div>
-                
-                <div className="bg-white -mt-10 lg:-mt-20 z-10 p-3 sm:p-6 w-[95%] shadow-xl rounded-xl border border-gray-100 transition-all duration-300 group-hover:-translate-y-2">
-                  <h3 className="text-sm sm:text-xl font-bold text-[#0B0909] truncate">Hazelnut Latte</h3>
-                  <p className="text-[#4F5665] mt-1 sm:mt-2 text-[10px] sm:text-xs leading-relaxed opacity-80 line-clamp-2">
-                    You can explore the menu that we provide with fun and have their own taste and make your day better.
-                  </p>
-                  <p className="text-brand-orange text-sm sm:text-xl mt-2 sm:mt-4 font-bold">IDR 20.000</p>
-                  
-                  <div className="flex flex-col mt-4 gap-2">
-                    <Link to="/product" className="w-full text-white border-2 border-brand-orange rounded-lg py-1.5 sm:py-2 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-[10px] sm:text-sm">
-                      Buy
-                    </Link>
-                    <Link to="/product" className="w-full border-2 border-brand-orange py-1.5 sm:py-2 rounded-lg flex justify-center items-center hover:bg-brand-orange group/cart transition-all cursor-pointer">
-                      <img src={Chart} alt="cart icon" className="w-4 h-4 sm:w-5 sm:h-5 filter-brand-orange group-hover/cart:brightness-0 group-hover/cart:invert" />
-                    </Link>
+            {isLoading ? (
+              [1, 2, 3, 4].map((item) => (
+                <div key={item} className="relative flex flex-col items-center group">
+                  <div className="w-full relative overflow-hidden rounded-xl shadow-lg bg-gray-200 animate-pulse">
+                    <div className="w-full h-40 sm:h-72"></div>
+                  </div>
+                  <div className="bg-white -mt-10 lg:-mt-20 z-10 p-3 sm:p-6 w-[95%] shadow-xl rounded-xl border border-gray-100">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-3 bg-gray-200 rounded mt-2 animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 rounded mt-4 w-1/2 animate-pulse"></div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              featuredProducts.map((product, index) => (
+                <div key={product.id} className="relative flex flex-col items-center group">
+                  <div className="w-full relative overflow-hidden rounded-xl shadow-lg transition-transform duration-500 group-hover:scale-105">
+                    <img src={product.image_products} alt={product.name} className="w-full h-40 sm:h-72 object-cover"/>
+                    {index < 2 && (
+                      <div className={`absolute top-2 left-2 bg-red-600 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded-sm`}>
+                        {index === 0 ? 'BEST SELLER' : 'LOW PRICE'}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="bg-white -mt-10 lg:-mt-20 z-10 p-3 sm:p-6 w-[95%] shadow-xl rounded-xl border border-gray-100 transition-all duration-300 group-hover:-translate-y-2">
+                    <h3 className="text-sm sm:text-xl font-bold text-[#0B0909] truncate">{product.name}</h3>
+                    <p className="text-[#4F5665] mt-1 sm:mt-2 text-[10px] sm:text-xs leading-relaxed opacity-80 line-clamp-2">
+                      {product.description || "You can explore the menu that we provide with fun and have their own taste and make your day better."}
+                    </p>
+                    {product.discount > 0 ? (
+                      <div className="mt-2">
+                        <p className="text-[#D00000] line-through text-[10px] sm:text-xs">
+                          IDR {Number(product.price).toLocaleString()}
+                        </p>
+                        <p className="text-brand-orange text-sm sm:text-xl font-bold">
+                          IDR {Number(product.price - (product.price * (product.discount / 100))).toLocaleString()}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-brand-orange text-sm sm:text-xl mt-2 sm:mt-4 font-bold">IDR {Number(product.price).toLocaleString()}</p>
+                    )}
+                    
+                    <div className="flex flex-col mt-4 gap-2">
+                      <Link to={`/product/detail-product/${product.id}`} className="w-full text-white border-2 border-brand-orange rounded-lg py-1.5 sm:py-2 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-[10px] sm:text-sm">
+                        Buy
+                      </Link>
+                      <Link to="/product" className="w-full border-2 border-brand-orange py-1.5 sm:py-2 rounded-lg flex justify-center items-center hover:bg-brand-orange group/cart transition-all cursor-pointer">
+                        <img src={Chart} alt="cart icon" className="w-4 h-4 sm:w-5 sm:h-5 filter-brand-orange group-hover/cart:brightness-0 group-hover/cart:invert" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </section>
 
