@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts, setPage } from "../redux/slices/product.slice";
 import ProductList from "../components/ui/product/ProductList";
@@ -13,18 +14,46 @@ import Filter from "../assets/product/Filter.svg";
 export default function Product() {
   const dispatch = useDispatch();
   const { items: products, isLoading, pageInfo } = useSelector((state) => state.product);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [minPrice, setMinPrice] = useState(10000);
-  const [maxPrice, setMaxPrice] = useState(80000);
-  const [search, setSearch] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState(["Coffee"]);
-  const [selectedSort, setSelectedSort] = useState(["Flash sale"]);
+  const [minPrice, setMinPrice] = useState(Number(searchParams.get("min_price")) || 0);
+  const [maxPrice, setMaxPrice] = useState(Number(searchParams.get("max_price")) || 100000);
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [selectedCategories, setSelectedCategories] = useState(
+    searchParams.get("category") ? searchParams.get("category").split(",") : []
+  );
+  const [selectedSort, setSelectedSort] = useState(searchParams.get("sort") || "");
 
   useEffect(() => {
-    dispatch(fetchProducts({ page: pageInfo.currentPage, limit: 6 }));
-  }, [dispatch, pageInfo.currentPage]);
+    const filters = {
+      page: Number(searchParams.get("page")) || pageInfo.currentPage,
+      limit: 6,
+      search: searchParams.get("search") || "",
+      category: searchParams.get("category") ? searchParams.get("category").split(",") : [],
+      sortBy: searchParams.get("sort") || "",
+      minPrice: searchParams.get("min_price") || "",
+      maxPrice: searchParams.get("max_price") || "",
+    };
+    dispatch(fetchProducts(filters));
+  }, [dispatch, pageInfo.currentPage, searchParams]);
+
+  const handleApplyFilter = () => {
+    const params = new URLSearchParams();
+    params.set("page", "1");
+    if (search) params.set("search", search);
+    if (selectedCategories.length > 0) params.set("category", selectedCategories.join(","));
+    if (selectedSort) params.set("sort", selectedSort);
+    params.set("min_price", minPrice.toString());
+    params.set("max_price", maxPrice.toString());
+    
+    setSearchParams(params);
+    dispatch(setPage(1));
+  };
 
   const handlePageChange = (newPage) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage.toString());
+    setSearchParams(params);
     dispatch(setPage(newPage));
   };
 
@@ -77,11 +106,17 @@ export default function Product() {
   };
 
   const handleReset = () => {
-    setMinPrice(10000);
-    setMaxPrice(80000);
+    setMinPrice(0);
+    setMaxPrice(100000);
     setSearch("");
-    setSelectedCategories(["Coffee"]);
-    setSelectedSort(["Flash sale"]);
+    setSelectedCategories([]);
+    setSelectedSort("");
+    setSearchParams({});
+    dispatch(setPage(1));
+  };
+
+  const toggleSort = (sort) => {
+    setSelectedSort((prev) => (prev === sort ? "" : sort));
   };
 
   const toggleCategory = (cat) => {
@@ -90,11 +125,6 @@ export default function Product() {
     );
   };
 
-  const toggleSort = (sort) => {
-    setSelectedSort((prev) =>
-      prev.includes(sort) ? prev.filter((s) => s !== sort) : [...prev, sort],
-    );
-  };
 
   const minPos = ((minPrice - 0) / (100000 - 0)) * 100;
   const maxPos = ((maxPrice - 0) / (100000 - 0)) * 100;
@@ -109,22 +139,28 @@ export default function Product() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleApplyFilter()}
               placeholder="Find Product"
               className="h-10 w-full rounded-lg border border-gray-100 bg-white px-4 pl-10 text-sm shadow-sm focus:outline-none"
             />
-            <svg
-              className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+            <button 
+              onClick={handleApplyFilter}
+              className="absolute top-1/2 left-3 -translate-y-1/2 cursor-pointer"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
+              <svg
+                className="h-4 w-4 text-gray-400 hover:text-brand-orange transition-colors"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            </button>
           </div>
           <button className="bg-brand-orange rounded-lg p-2.5 text-white shadow-sm">
             <img src={Filter} alt="Filter" />
@@ -263,6 +299,7 @@ export default function Product() {
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleApplyFilter()}
                     placeholder="Search Your Product"
                     className="focus:ring-brand-orange h-12 w-full rounded-lg bg-white px-4 text-black transition-all outline-none placeholder:text-gray-400 focus:ring-2"
                   />
@@ -289,7 +326,7 @@ export default function Product() {
                       <div className="relative flex items-center">
                         <input
                           type="checkbox"
-                          className="peer checked:bg-brand-orange checked:border-brand-orange h-5 w-5 appearance-none rounded-full border-2 border-white/20 transition-all"
+                          className="peer checked:bg-brand-orange checked:border-brand-orange h-5 w-5 appearance-none rounded-md border-2 border-white/20 transition-all"
                           checked={selectedCategories.includes(cat)}
                           onChange={() => toggleCategory(cat)}
                         />
@@ -331,10 +368,12 @@ export default function Product() {
                       >
                         <div className="relative flex items-center">
                           <input
-                            type="checkbox"
-                            className="peer checked:bg-brand-orange checked:border-brand-orange h-5 w-5 appearance-none rounded-full border-2 border-white/20 transition-all"
-                            checked={selectedSort.includes(sort)}
-                            onChange={() => toggleSort(sort)}
+                            type="radio"
+                            name="sortBy"
+                            className="peer checked:bg-brand-orange checked:border-brand-orange h-5 w-5 appearance-none rounded-md border-2 border-white/20 transition-all shadow-sm focus:ring-1 focus:ring-brand-orange"
+                            checked={selectedSort === sort}
+                            onClick={() => toggleSort(sort)}
+                            onChange={() => {}}
                           />
                           <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-white opacity-0 transition-opacity peer-checked:opacity-100">
                             <svg
@@ -398,7 +437,10 @@ export default function Product() {
                 </div>
               </div>
 
-              <button className="bg-brand-orange shadow-brand-orange/20 w-full rounded-xl py-4 font-extrabold text-[#0B0909] shadow-lg transition-all duration-300 hover:bg-white">
+              <button 
+                onClick={handleApplyFilter}
+                className="bg-brand-orange shadow-brand-orange/20 w-full rounded-xl py-4 font-extrabold text-[#0B0909] shadow-lg transition-all duration-300 hover:bg-white"
+              >
                 Apply Filter
               </button>
             </div>
@@ -414,7 +456,15 @@ export default function Product() {
 
             {/* Pagination Section */}
             <div className="mt-12 mb-8 flex items-center justify-center gap-3 lg:justify-start">
-              {Array.from({ length: pageInfo.totalPage }, (_, i) => i + 1).map((page) => (
+              <button 
+                onClick={() => pageInfo.currentPage > 1 && handlePageChange(pageInfo.currentPage - 1)}
+                className="bg-brand-orange shadow-brand-orange/20 flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-all hover:scale-110 sm:h-12 sm:w-12 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={pageInfo.currentPage === 1}
+              >
+                <img src={ArrowLeft} alt="Previous" className="h-4 w-4" />
+              </button>
+
+              {Array.from({ length: pageInfo.totalPage || 1 }, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
                   onClick={() => handlePageChange(page)}
@@ -427,10 +477,11 @@ export default function Product() {
                   {page}
                 </button>
               ))}
+              
               <button 
-                onClick={() => pageInfo.currentPage < pageInfo.totalPage && handlePageChange(pageInfo.currentPage + 1)}
-                className="bg-brand-orange shadow-brand-orange/20 flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-all hover:scale-110 sm:h-12 sm:w-12 disabled:opacity-50"
-                disabled={pageInfo.currentPage === pageInfo.totalPage}
+                onClick={() => pageInfo.currentPage < (pageInfo.totalPage || 1) && handlePageChange(pageInfo.currentPage + 1)}
+                className="bg-brand-orange shadow-brand-orange/20 flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-all hover:scale-110 sm:h-12 sm:w-12 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={pageInfo.currentPage === (pageInfo.totalPage || 1)}
               >
                 <img src={ArrowRight} alt="Next" className="h-4 w-4" />
               </button>

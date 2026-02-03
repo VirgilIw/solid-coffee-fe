@@ -2,12 +2,37 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchProducts = createAsyncThunk(
     "product/fetchProducts",
-    async ({ page = 1, limit = 6 }, { rejectWithValue }) => {
+    async ({ page = 1, limit = 6, search = "", category = [], sortBy = "", minPrice = "", maxPrice = "" }, { rejectWithValue }) => {
         try {
-            const response = await fetch(`http://192.168.50.221:8080/products?page=${page}&limit=${limit}`);
+            const params = new URLSearchParams();
+            params.append("page", page);
+            params.append("limit", limit);
+
+            if (search) {
+                params.append("search", search);
+                params.append("q", search);
+                params.append("name", search);
+            }
+            if (category && category.length > 0) {
+                category.forEach(cat => params.append("category", cat));
+            }
+            if (sortBy) {
+                params.append("sort", sortBy.toLowerCase());
+                params.append("sortBy", sortBy.toLowerCase());
+            }
+            if (minPrice) {
+                params.append("minPrice", minPrice);
+                params.append("min_price", minPrice);
+            }
+            if (maxPrice) {
+                params.append("maxPrice", maxPrice);
+                params.append("max_price", maxPrice);
+            }
+
+            const response = await fetch(`http://192.168.50.221:8080/products?${params.toString()}`);
 
             if (!response.ok) {
-                throw new Error("Gagal mengambil data produk");
+                throw new Error("Failed Get Data Product");
             }
 
             const data = await response.json();
