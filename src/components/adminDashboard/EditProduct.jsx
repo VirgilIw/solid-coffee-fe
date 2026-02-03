@@ -60,7 +60,7 @@ function EditProduct({ isEditbarOpen, toggleEditbar, selectProduct }) {
   return (
     <div>
       <div
-        className={`fixed top-0 right-0 z-41 h-full w-full transform bg-white py-10 shadow-2xl transition-transform duration-300 ease-in-out md:w-96 ${isEditbarOpen ? "translate-x-0" : "translate-x-full"} `}
+        className={`fixed top-0 right-0 z-40 h-full w-full transform bg-white py-10 shadow-2xl transition-transform duration-300 ease-in-out md:w-96 ${isEditbarOpen ? "translate-x-0" : "translate-x-full"} `}
       >
         <div className="flex h-full flex-col overflow-y-auto p-6">
           <div className="flex items-center justify-between py-4">

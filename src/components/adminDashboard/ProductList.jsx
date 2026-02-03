@@ -159,6 +159,8 @@ function ProductList() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    updateUrlQueryParam("page", "");
+    updateUrlQueryParam("page", page);
   };
 
   const [selectProduct, setSelectProduct] = useState(null);
