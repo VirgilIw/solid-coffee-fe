@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router";
 import React from "react";
 import MediaAuth from "../components/ui/MediaAuth";
 import { useDispatch } from "react-redux";
-import { setLoginData } from "../redux/slices/login.slice";
+import { loginThunk } from "../redux/slices/login.slice";
 
 export const Login = () => {
   const [openEye, setOpenEye] = React.useState(false);
@@ -52,7 +52,7 @@ export const Login = () => {
       localStorage.setItem("token", data.data.token);
 
       // baru simpan ke redux
-      dispatch(setLoginData({ email: form.email }));
+      dispatch(loginThunk(form));
 
       navigate("/");
     } catch (error) {
