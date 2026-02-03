@@ -15,7 +15,7 @@ export const Login = () => {
     password: "",
   });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleEye = () => {
     setOpenEye(!openEye);
@@ -32,15 +32,18 @@ export const Login = () => {
 
       const respon = await fetch("http://192.168.50.221:8080/auth/", {
         method: "POST",
-        "Content-Type": "application/json",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(payload),
       });
 
       const data = await respon.json();
+      localStorage.setItem("token", data.data.token);
       if (!respon.ok) {
         throw new Error(data.message || "Login failed");
       }
-      navigate("/")
+      navigate("/");
       console.log("LOGIN SUCCESS", data);
     } catch (error) {
       console.log(error.message);
