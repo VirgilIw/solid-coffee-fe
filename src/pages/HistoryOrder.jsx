@@ -1,3 +1,5 @@
+import { useState } from "react"
+import ChatWindow from "../components/ui/ChatWindow"
 import Calendar from "../assets/Order/Calendar.svg"
 import Calendar2 from "../assets/Order/Calendar2.svg"
 import Glass from "../assets/Order/glass-tea.svg"
@@ -39,6 +41,8 @@ const orders = [
 ]
 
 export default function HistoryOrder() {
+    const [isChatOpen, setIsChatOpen] = useState(false)
+
   return (
     <section className='py-8 px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 max-w-7xl mx-auto'>
         <div>
@@ -128,7 +132,12 @@ export default function HistoryOrder() {
                     <p className="text-[#4F5665] text-sm leading-6 mb-6">
                         if your unable to find answer or find your product quickly, please describe your problem and tell us. we will give you solution.
                     </p>
-                    <button className="bg-brand-orange text-white px-6 py-3 rounded-md font-medium hover:bg-[#ffad4e] transition w-full">Send Message</button>
+                    <button 
+                        onClick={() => setIsChatOpen(!isChatOpen)}
+                        className="bg-brand-orange text-white px-6 py-3 rounded-md font-medium hover:bg-[#ffad4e] transition w-full">
+                        Send Message
+                    </button>
+                    <ChatWindow isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
                 </div> 
             </div>
         </div>
