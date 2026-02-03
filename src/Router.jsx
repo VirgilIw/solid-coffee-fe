@@ -14,41 +14,46 @@ import HistoryOrder from "./pages/HistoryOrder";
 import AdminUserlist from "./pages/AdminUserlist";
 import ProductDetail from "./pages/ProductDetail";
 import CheckoutProduct from "./pages/CheckoutProduct";
+import Profile from "./pages/Profile";
+import ProfileLayout from "./components/layouts/ProfileLayout";
 
 export default function Router() {
   return (
     <>
       <Routes>
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<Home />} />  
-      </Route>
-      <Route path="dashboard" element={<DashboardLayout/>}>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
+        </Route>
+        <Route path="dashboard" element={<DashboardLayout />}>
           <Route path="admin">
             <Route index element={<AdminDashboard />} />
-            <Route path="users-list" element={<AdminUserlist/>} />
+            <Route path="users-list" element={<AdminUserlist />} />
           </Route>
         </Route>
-      <Route path="product" element={<ProductLayout />}>
-        <Route index element={<Product />} />
-        <Route path="detail-product" element={<ProductDetail />} />
-        <Route path="checkout-product" element={<CheckoutProduct />} />
-      </Route>
-      <Route path="order" element={<OrderLayout />}>
-        <Route path="detail" element={<DetailOrder/>}/>
-        <Route path="history" element={<HistoryOrder/>} />
-      </Route>
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
-      <Route path="forgot-password" element={<ForgotPassword />} />
-      <Route
-        path="*"
-        element={
-          <div className="flex h-dvh items-center justify-center text-5xl font-bold">
-            404 NOT FOUND
-          </div>
-        }
-      />
-     </Routes>
+        <Route path="product" element={<ProductLayout />}>
+          <Route index element={<Product />} />
+          <Route path="detail-product" element={<ProductDetail />} />
+          <Route path="checkout-product" element={<CheckoutProduct />} />
+        </Route>
+        <Route path="order" element={<OrderLayout />}>
+          <Route path="detail" element={<DetailOrder />} />
+          <Route path="history" element={<HistoryOrder />} />
+        </Route>
+        <Route path="profile" element={<ProfileLayout />}>
+          <Route index element={<Profile />} />
+        </Route>
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="*"
+          element={
+            <div className="flex h-dvh items-center justify-center text-5xl font-bold">
+              404 NOT FOUND
+            </div>
+          }
+        />
+      </Routes>
     </>
   );
 }
