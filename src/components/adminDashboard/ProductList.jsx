@@ -1,121 +1,143 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Search } from "lucide-react";
 import FilterIcon from "../../assets/adminDashborad/FilterIcon.svg";
 import Delete from "../../assets/adminDashborad/deleteIcon.svg";
 import Edit from "../../assets/adminDashborad/editIcon.svg";
 import AddProducts from "./AddProducts";
 import EditProduct from "./EditProduct";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router";
+import { fetchProducts } from "../../redux/slices/product.slice";
 
 function ProductList() {
-  const products = [
-    {
-      id: 1,
-      name: "Caramel Machiato",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-    {
-      id: 2,
-      name: "Hazelnut Latte",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-    {
-      id: 3,
-      name: "Kopi Susu",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1534778101976-62847782c213?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-    {
-      id: 4,
-      name: "Espresso Supreme",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-    {
-      id: 5,
-      name: "Caramel Velvet Latte",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1587734195503-904137cec4a6?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-    {
-      id: 6,
-      name: "Caramel Machiato II",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-    {
-      id: 7,
-      name: "Hazelnut Latte II",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-    {
-      id: 8,
-      name: "Kopi Susu II",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1534778101976-62847782c213?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-    {
-      id: 9,
-      name: "Espresso Supreme II",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-    {
-      id: 10,
-      name: "Caramel Velvet Latte II",
-      price: 40000,
-      description:
-        "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-      image:
-        "https://images.unsplash.com/photo-1587734195503-904137cec4a6?w=100&h=100&fit=crop&crop=center",
-      stock: 200,
-    },
-  ];
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "Caramel Machiato",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Hazelnut Latte",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Kopi Susu",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1534778101976-62847782c213?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Espresso Supreme",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Caramel Velvet Latte",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1587734195503-904137cec4a6?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Caramel Machiato II",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "Hazelnut Latte II",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Kopi Susu II",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1534778101976-62847782c213?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  //   {
+  //     id: 9,
+  //     name: "Espresso Supreme II",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  //   {
+  //     id: 10,
+  //     name: "Caramel Velvet Latte II",
+  //     price: 40000,
+  //     description:
+  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
+  //     image:
+  //       "https://images.unsplash.com/photo-1587734195503-904137cec4a6?w=100&h=100&fit=crop&crop=center",
+  //     stock: 200,
+  //   },
+  // ];
+
+  const dispatch = useDispatch();
+  const {
+    items: products,
+    isLoading,
+    pageInfo,
+  } = useSelector((state) => state.product);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  useEffect(() => {
+    const filters = {
+      page: Number(searchParams.get("page")) || pageInfo.currentPage,
+      limit: 5,
+      search: searchParams.get("title") || "",
+    };
+    dispatch(fetchProducts(filters));
+  }, [dispatch, pageInfo.currentPage, searchParams]);
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    updateUrlQueryParam("search", "");
-    updateUrlQueryParam("search", e.target.value);
+    setSearchParams(e.target.value);
+    updateUrlQueryParam("title", "");
+    updateUrlQueryParam("title", e.target.value);
   };
 
   const handleSubmitSearch = (event) => {
@@ -239,10 +261,10 @@ function ProductList() {
             </div>
           </div>
 
-          <div className="rounded-xl bg-white shadow-md">
-            <div className="min-w-167.5">
-              <table className="divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+          <div className="w-full rounded-xl bg-white shadow-md">
+            <div className="w-full min-w-167.5">
+              <table className="w-full divide-y divide-gray-200">
+                <thead className="w-full bg-gray-50">
                   <tr>
                     <th
                       scope="col"
@@ -282,7 +304,7 @@ function ProductList() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="w-full divide-y divide-gray-200">
                   {paginatedProducts.map((product, index) => (
                     <tr
                       key={product.id}
@@ -292,7 +314,7 @@ function ProductList() {
                         <div className="flex items-center">
                           <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-gray-200">
                             <img
-                              src={product.image}
+                              src={product.image_products}
                               alt={product.name}
                               className="h-full w-full object-cover object-center"
                               onError={(e) => {
