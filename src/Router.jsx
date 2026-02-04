@@ -28,10 +28,10 @@ export default function Router() {
         </Route>
         <Route path="dashboard" element={<DashboardLayout />}>
           <Route path="admin">
-            <Route index element={<Admin/>} />
-            <Route path="product-list" element={<AdminProductList/>} />
-            <Route path="order-list" element={<AdminOrderList/>} />
-            <Route path="users-list" element={<AdminUserlist/>} />
+            <Route index element={<Admin />} />
+            <Route path="product-list" element={<AdminProductList />} />
+            <Route path="order-list" element={<AdminOrderList />} />
+            <Route path="users-list" element={<AdminUserlist />} />
           </Route>
         </Route>
         <Route path="product" element={<ProductLayout />}>
