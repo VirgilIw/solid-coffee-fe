@@ -36,7 +36,7 @@ export default function Router() {
         </Route>
         <Route path="product" element={<ProductLayout />}>
           <Route index element={<Product />} />
-          <Route path="detail-product" element={<ProductDetail />} />
+          <Route path=":id" element={<ProductDetail />} />
           <Route path="checkout-product" element={<CheckoutProduct />} />
         </Route>
         <Route path="order" element={<OrderLayout />}>

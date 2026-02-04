@@ -3,19 +3,27 @@ import ArrowRight from "../assets/home/arrow-right.png";
 import FoodImage1 from "../assets/home/Food-1.png";
 import Chart from "../assets/images/ShoppingCart.svg";
 import React from "react";
-import detail from "../assets/images/detail.svg"
+import detail from "../assets/images/detail.svg";
+import { useParams, useSearchParams } from "react-router";
 
 export default function ProductDetail() {
   const [counter, setCounter] = React.useState(0);
   const [unClick, setUnClick] = React.useState(null);
-  // const [searchParams, setSearchParams]= React.useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
 
+  // const search = searchParams.get("search") || "";
+// 
+  const { id } = useParams();
+
+  const API_URL = import.meta.env.VITE_SOLID_API_URL;
+  //
   const handleIncrement = () => {
     setCounter((counter) => {
       return counter + 1;
     });
+    updateParams("qty", counter + 1);
   };
-
+  //
   const handleDecrement = () => {
     if (counter <= 0) {
       return;
@@ -23,8 +31,9 @@ export default function ProductDetail() {
     setCounter((counter) => {
       return counter - 1;
     });
+    updateParams("qty", counter - 1);
   };
-
+  //
   const handleInput = (value) => {
     setUnClick((prev) => {
       if (prev === value) {
@@ -33,6 +42,51 @@ export default function ProductDetail() {
         return value;
       }
     });
+  };
+  //
+  React.useEffect(() => {
+    (async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${API_URL}/admin/products/${id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+
+        const data = await res.json();
+        console.log(data);
+      } catch (err) {
+        console.error(err.message);
+      }
+    })();
+  }, [API_URL, id]);
+  //
+  const updateParams = (key, value) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (value === "" || value === null) {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+
+    setSearchParams(params);
+  };
+  //
+  const handleSizeChange = (size) => {
+    updateParams("size", size);
+  };
+
+  // Tambahkan handler untuk variant
+  const handleVariantChange = (variant) => {
+    handleInput(variant);
+    updateParams("variant", variant);
   };
 
   return (
@@ -112,7 +166,10 @@ export default function ProductDetail() {
               </button>
             </div>
             <div className="mt-4">
-              <label htmlFor="size" className="text-xl font-semibold lg:text-2xl">
+              <label
+                htmlFor="size"
+                className="text-xl font-semibold lg:text-2xl"
+              >
                 Choose Size
               </label>
               <div className="mt-4 grid grid-cols-3 gap-3 text-center text-sm lg:gap-6 lg:text-base">
@@ -122,6 +179,7 @@ export default function ProductDetail() {
                     name="size"
                     value="regular"
                     className="peer sr-only appearance-none"
+                    onChange={() => handleSizeChange("regular")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Regular
@@ -134,6 +192,7 @@ export default function ProductDetail() {
                     name="size"
                     value="medium"
                     className="peer sr-only appearance-none"
+                    onChange={() => handleSizeChange("medium")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Medium
@@ -146,6 +205,7 @@ export default function ProductDetail() {
                     name="size"
                     value="large"
                     className="peer sr-only appearance-none"
+                    onChange={() => handleSizeChange("large")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Large
@@ -154,7 +214,10 @@ export default function ProductDetail() {
               </div>
             </div>
             <div className="mt-4">
-              <label htmlFor="variant" className="text-xl font-semibold lg:text-2xl">
+              <label
+                htmlFor="variant"
+                className="text-xl font-semibold lg:text-2xl"
+              >
                 Hot/Ice?
               </label>
               <div className="mt-4 grid grid-cols-2 gap-3 text-center text-sm lg:gap-6 lg:text-base">
@@ -164,7 +227,7 @@ export default function ProductDetail() {
                     name="variant"
                     value="ice"
                     className="peer sr-only appearance-none"
-                    onChange={() => handleInput("ice")}
+                    onChange={() => handleVariantChange("ice")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Ice
@@ -178,7 +241,7 @@ export default function ProductDetail() {
                     value="hot"
                     className="peer sr-only appearance-none"
                     checked={unClick === "hot"}
-                    onChange={() => handleInput("hot")}
+                    onChange={() => handleVariantChange("hot")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Hot
@@ -258,7 +321,7 @@ export default function ProductDetail() {
                     <img
                       src={Chart}
                       alt="Cart"
-                      className="filter-brand-orange h-4 w-4 sm:h-6 sm:w-6 text-brand-orange"
+                      className="filter-brand-orange text-brand-orange h-4 w-4 sm:h-6 sm:w-6"
                     />
                   </button>
                 </div>
