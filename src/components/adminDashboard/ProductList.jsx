@@ -114,24 +114,28 @@ function ProductList() {
   // ];
 
   const dispatch = useDispatch();
-  const { items: products, isLoading, pageInfo } = useSelector((state) => state.product);
+  const {
+    items: products,
+    isLoading,
+    pageInfo,
+  } = useSelector((state) => state.product);
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
 
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-      const filters = {
-        page: Number(searchParams.get("page")) || pageInfo.currentPage,
-        limit: 5,
-        search: searchParams.get("title") || "",
-      };
-      dispatch(fetchProducts(filters));
-    }, [dispatch, pageInfo.currentPage, searchParams]);
+    const filters = {
+      page: Number(searchParams.get("page")) || pageInfo.currentPage,
+      limit: 5,
+      search: searchParams.get("title") || "",
+    };
+    dispatch(fetchProducts(filters));
+  }, [dispatch, pageInfo.currentPage, searchParams]);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setSearchParams(e.target.value)
+    setSearchParams(e.target.value);
     updateUrlQueryParam("title", "");
     updateUrlQueryParam("title", e.target.value);
   };
@@ -257,10 +261,10 @@ function ProductList() {
             </div>
           </div>
 
-          <div className="rounded-xl bg-white shadow-md w-full">
-            <div className="min-w-167.5 w-full">
-              <table className="divide-y divide-gray-200 w-full">
-                <thead className="bg-gray-50 w-full">
+          <div className="w-full rounded-xl bg-white shadow-md">
+            <div className="w-full min-w-167.5">
+              <table className="w-full divide-y divide-gray-200">
+                <thead className="w-full bg-gray-50">
                   <tr>
                     <th
                       scope="col"
@@ -300,7 +304,7 @@ function ProductList() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 w-full">
+                <tbody className="w-full divide-y divide-gray-200">
                   {paginatedProducts.map((product, index) => (
                     <tr
                       key={product.id}
