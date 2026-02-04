@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useState } from "react"
 import ChatWindow from "../components/ui/ChatWindow"
 import Calendar from "../assets/Order/Calendar.svg"
 import Calendar2 from "../assets/Order/Calendar2.svg"
@@ -42,7 +41,6 @@ const orders = [
 ]
 
 export default function HistoryOrder() {
-    const navigate = useNavigate();
     const [isChatOpen, setIsChatOpen] = useState(false)
 
   return (
@@ -82,7 +80,7 @@ export default function HistoryOrder() {
                                 <div className="flex flex-col">
                                     <p className="flex gap-2 text-[#4F5665] text-sm"><img src={Glass} alt="Icon" className="w-4 h-4" /> No. Order</p>
                                     <p className="font-bold mt-1 text-base">{order.id}</p>
-                                    <button onClick={() => navigate('/order/detail')} className="text-brand-orange hover:text-[#ffad4e] text-sm font-medium underline text-left mt-1 hidden md:block">View Order Detail</button>
+                                    <button className="text-brand-orange hover:text-[#ffad4e] text-sm font-medium underline text-left mt-1 hidden md:block">View Order Detail</button>
                                 </div>
                                 <div className="flex flex-col">
                                     <p className="flex gap-2 text-[#4F5665] text-sm"><img src={Calendar2} alt="Icon" className="w-4 h-4" /> Date</p>
@@ -97,7 +95,7 @@ export default function HistoryOrder() {
                                     <p className="font-semibold mt-1 bg-[#FF890633] text-brand-orange py-1 px-3 rounded-full text-xs w-fit">{order.status}</p>
                                 </div>
                             </div>
-                            <button onClick={() => navigate('/order/detail')} className="text-brand-orange text-sm font-medium hover:underline text-left mt-1 block md:hidden">View Order Detail</button>
+                            <button className="text-brand-orange text-sm font-medium hover:underline text-left mt-1 block md:hidden">View Order Detail</button>
                         </div>
                     ))}
                 </div>
