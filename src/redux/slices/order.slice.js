@@ -1,36 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchProducts = createAsyncThunk(
-    "product/fetchProducts",
-    async ({ page = 1, limit = 6, title = "", category = [], sortBy = "", minPrice = "", maxPrice = "" }, { rejectWithValue }) => {
+export const fetchOrders = createAsyncThunk(
+    "order/fetchOrders",
+    async ({ page = 1, limit = 5, noOrder = "", status = ""}, { rejectWithValue }) => {
         try {
             const params = new URLSearchParams();
             params.append("page", page);
             params.append("limit", limit);
 
-            if (title) {
-                params.append("title", title);
+            if (noOrder) {
+                params.append("No.Order", noOrder);
             }
-            if (category && category.length > 0) {
-                category.forEach(cat => params.append("category", cat));
-            }
-            if (sortBy) {
-                params.append("sort", sortBy.toLowerCase());
-                params.append("sortBy", sortBy.toLowerCase());
-            }
-            if (minPrice) {
-                params.append("minPrice", minPrice);
-                params.append("min_price", minPrice);
-            }
-            if (maxPrice) {
-                params.append("maxPrice", maxPrice);
-                params.append("max_price", maxPrice);
+            if (status) {
+                params.append("sort", status.toLowerCase());
             }
 
-            const response = await fetch(`http://192.168.50.221:8080/products?${params.toString()}`);
+            const response = await fetch(`http://192.168.50.221:8080/orders?${params.toString()}`);
 
             if (!response.ok) {
-                throw new Error("Failed Get Data Product");
+                throw new Error("Failed Get Data Order");
             }
 
             const data = await response.json();
@@ -41,53 +29,51 @@ export const fetchProducts = createAsyncThunk(
     }
 );
 
-export const insertProduct = createAsyncThunk(
-    "product/addProduct",
-    async (productData, { rejectWithValue }) => {
-        try {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMjI5MjYxfQ.e6GXVBD0UycZbEax1xDM7TjUXReb0QQ9TpMZGMaTO0Q";
-
-            const response = await fetch(`http://192.168.50.221:8080/admin/products`, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    // "Content-Type": "multipart/form-data",
-                },
-                body: productData
-            });
-
-            const data = await response.json();
-            console.log(productData)
-            console.log(response)
-            if (!response.ok) {
-                throw new Error(data.message || "Failed Insert Product");
-            }
-
-            return data;
-        } catch (error) {
-            return rejectWithValue(error.message);
-        }
-    }
-);
-
-export const updateProduct = createAsyncThunk(
-    "product/updateProduct",
-    async ({ id, productData }, { rejectWithValue }) => {
+export const insertOrder = createAsyncThunk(
+    "order/addOrder",
+    async (orderData, { rejectWithValue }) => {
         try {
             const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMTc1MDQzfQ.tnMJ5IB00SPwLleE84Fo-jP4bOLj_pycnR1HZKrypx4";
 
-            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/products/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/orders/`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+                body: orderData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed Insert Order");
+            }
+
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updateOrder = createAsyncThunk(
+    "order/updateOrder",
+    async ({ id, orderData }, { rejectWithValue }) => {
+        try {
+            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMTc1MDQzfQ.tnMJ5IB00SPwLleE84Fo-jP4bOLj_pycnR1HZKrypx4";
+
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/orders/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${token}`
                 },
-                body: productData
+                body: orderData
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || "Failed Update Product");
+                throw new Error(data.message || "Failed Update Order");
             }
 
             return data;
@@ -97,13 +83,13 @@ export const updateProduct = createAsyncThunk(
     }
 );
 
-export const deleteProduct = createAsyncThunk(
-    "product/deleteProduct",
+export const deleteOrder = createAsyncThunk(
+    "order/deleteorder",
     async (id, { rejectWithValue }) => {
         try {
             const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMTc1MDQzfQ.tnMJ5IB00SPwLleE84Fo-jP4bOLj_pycnR1HZKrypx4";
 
-            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/products/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/orders/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -112,7 +98,7 @@ export const deleteProduct = createAsyncThunk(
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data.message || "Failed Delete Product");
+                throw new Error(data.message || "Failed Delete Order");
             }
 
             return id;
@@ -122,8 +108,8 @@ export const deleteProduct = createAsyncThunk(
     }
 );
 
-const productSlice = createSlice({
-    name: "product",
+const orderSlice = createSlice({
+    name: "order",
     initialState: {
         items: [],
         pageInfo: {
@@ -141,66 +127,66 @@ const productSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchProducts.pending, (state) => {
+            .addCase(fetchOrders.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(fetchProducts.fulfilled, (state, action) => {
+            .addCase(fetchOrders.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.items = action.payload.data || [];
                 state.pageInfo = action.payload.pageInfo || state.pageInfo;
             })
-            .addCase(fetchProducts.rejected, (state, action) => {
+            .addCase(fetchOrders.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });
         
         builder
-            .addCase(insertProduct.pending, (state) => {
+            .addCase(insertOrder.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(insertProduct.fulfilled, (state, action) => {
+            .addCase(insertOrder.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.items = action.payload.data || [];
                 state.pageInfo = action.payload.pageInfo || state.pageInfo;
             })
-            .addCase(insertProduct.rejected, (state, action) => {
+            .addCase(insertOrder.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });
         
         builder
-            .addCase(updateProduct.pending, (state) => {
+            .addCase(updateOrder.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(updateProduct.fulfilled, (state, action) => {
+            .addCase(updateOrder.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.items = action.payload.data || [];
                 state.pageInfo = action.payload.pageInfo || state.pageInfo;
             })
-            .addCase(updateProduct.rejected, (state, action) => {
+            .addCase(updateOrder.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });
 
         builder
-            .addCase(deleteProduct.pending, (state) => {
+            .addCase(deleteOrder.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
             })
-            .addCase(deleteProduct.fulfilled, (state, action) => {
+            .addCase(deleteOrder.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.items = action.payload.data || [];
                 state.pageInfo = action.payload.pageInfo || state.pageInfo;
             })
-            .addCase(deleteProduct.rejected, (state, action) => {
+            .addCase(deleteOrder.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });
     },
 });
 
-export const { setPage } = productSlice.actions;
-export default productSlice.reducer;
+export const { setPage } = orderSlice.actions;
+export default orderSlice.reducer;
