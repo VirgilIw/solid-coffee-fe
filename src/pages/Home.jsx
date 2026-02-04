@@ -125,7 +125,7 @@ export default function Home() {
               featuredProducts.map((product, index) => (
                 <div key={product.id} className="relative flex flex-col items-center group">
                   <div className="w-full relative overflow-hidden rounded-xl shadow-lg transition-transform duration-500 group-hover:scale-105">
-                    <img src={product.image_products} alt={product.name} className="w-full h-40 sm:h-72 object-cover"/>
+                    <img src={`http://192.168.50.221:8080/static/img/products/${product.image_products}`} alt={product.name} className="w-full h-40 sm:h-72 object-cover"/>
                     {index < 2 && (
                       <div className={`absolute top-2 left-2 bg-red-600 text-white text-[10px] sm:text-xs font-bold px-2 py-1 rounded-sm`}>
                         {index === 0 ? 'BEST SELLER' : 'LOW PRICE'}
