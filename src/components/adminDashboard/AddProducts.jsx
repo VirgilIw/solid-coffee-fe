@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { Upload } from "lucide-react";
 import Xicon from "../../assets/adminDashborad/XCircle.svg";
 import Image from "../../assets/adminDashborad/Image.svg";
+import { useDispatch } from "react-redux";
+import { insertProduct } from "../../redux/slices/product.slice";
 
 function AddProducts({ isAddbarOpen, toggleAddbar }) {
+  const dispatch = useDispatch();
   const [newProduct, setNewProduct] = useState({
-    name: "",
+    product_name: "",
     price: "",
     description: "",
     stock: "",
-    photo: [],
+    images_file: [],
     photoPreview: [],
   });
 
@@ -23,7 +26,7 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
 
   const handlePhotoUpload = (e) => {
     const files = Array.from(e.target.files);
-    setNewProduct((prev) => ({ ...prev, photo: files }));
+    setNewProduct((prev) => ({ ...prev, images_file: files }));
     const previewUrls = files.map((file) => URL.createObjectURL(file));
     setNewProduct((prev) => ({
       ...prev,
@@ -31,16 +34,31 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(newProduct.images_file);
+
+    const formData = new FormData();
+    formData.append("product_name", newProduct.product_name);
+    formData.append("price", newProduct.price);
+    formData.append("description", newProduct.description);
+    newProduct.images_file.map((file) => (
+      formData.append("images_file", file)
+    ))
+    try {
+      dispatch(insertProduct(formData));
+    } catch {
+      return;
+    }
+
     console.log("New Product:", newProduct);
 
     setNewProduct({
-      name: "",
+      product_name: "",
       price: "",
       description: "",
       stock: "",
-      photo: [],
+      images_file: [],
       photoPreview: [],
     });
     toggleAddbar();
@@ -89,7 +107,7 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
                         onClick={() =>
                           setNewProduct((prev) => ({
                             ...prev,
-                            photo: [],
+                            images_file: [],
                             photoPreview: [],
                           }))
                         }
@@ -112,7 +130,7 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
                   </div>
                   <input
                     type="file"
-                    name="photo"
+                    name="images_file"
                     multiple
                     accept="image/*"
                     onChange={handlePhotoUpload}
@@ -129,8 +147,8 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
                 </label>
                 <input
                   type="text"
-                  name="name"
-                  value={newProduct.name}
+                  name="product_name"
+                  value={newProduct.product_name}
                   onChange={handleInputChange}
                   placeholder="Enter Product Name"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
@@ -181,7 +199,6 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
                   onChange={handleInputChange}
                   placeholder="Enter Product Stock"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
-                  required
                 />
               </div>
               <div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Search,
   Filter,
@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 import AddOrder from "./AddOrder";
 import EditOrder from "./EditOrder";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router";
+import { fetchOrders } from "../../redux/slices/order.slice";
 
 function OrderList() {
   const [activeSidebar, setActiveSidebar] = useState(null);
@@ -35,228 +38,248 @@ function OrderList() {
     ],
   });
 
-  const orders = [
-    {
-      id: 1,
-      orderNumber: "#12354-09893",
-      date: "26 January 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "R", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "Done",
-      total: 40000,
-      customer: {
-        fullName: "Ghaluh Wizard Anggoro",
-        address: "Griya bandung indah",
-        phone: "082116304338",
-        paymentMethod: "Cash",
-        shipping: "Dine In",
-      },
-      details: [
-        {
-          name: "Hazelnut Latte",
-          quantity: 2,
-          size: "Regular",
-          temperature: "Ice",
-          type: "Dine In",
-          price: 40000,
-          unitPrice: 20000,
-        },
-        {
-          name: "Caramel Machiatto",
-          quantity: 2,
-          size: "Regular",
-          temperature: "Ice",
-          type: "Dine In",
-          price: 40000,
-          unitPrice: 20000,
-        },
-      ],
-    },
-    {
-      id: 2,
-      orderNumber: "#12354-09894",
-      date: "27 January 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "L", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "Pending",
-      total: 40000,
-      customer: {
-        fullName: "John Doe",
-        address: "Jl. Merdeka No. 123",
-        phone: "081234567890",
-        paymentMethod: "Credit Card",
-        shipping: "Delivery",
-      },
-    },
-    {
-      id: 3,
-      orderNumber: "#12354-09895",
-      date: "28 January 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "L", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "On Progress",
-      total: 40000,
-      customer: {
-        fullName: "Jane Smith",
-        address: "Jl. Sudirman No. 45",
-        phone: "085678901234",
-        paymentMethod: "Cash",
-        shipping: "Dine In",
-      },
-    },
-    {
-      id: 4,
-      orderNumber: "#12354-09896",
-      date: "29 January 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "L", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "Waiting",
-      total: 40000,
-      customer: {
-        fullName: "Robert Johnson",
-        address: "Jl. Gatot Subroto No. 78",
-        phone: "087812345678",
-        paymentMethod: "Debit Card",
-        shipping: "Delivery",
-      },
-    },
-    {
-      id: 5,
-      orderNumber: "#12354-09897",
-      date: "30 January 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "L", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "On Progress",
-      total: 40000,
-      customer: {
-        fullName: "Sarah Williams",
-        address: "Jl. Thamrin No. 90",
-        phone: "081112223333",
-        paymentMethod: "Cash",
-        shipping: "Dine In",
-      },
-    },
-    {
-      id: 6,
-      orderNumber: "#12354-09898",
-      date: "1 Frebuari 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "R", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "Done",
-      total: 40000,
-      customer: {
-        fullName: "Ghaluh Wizard Anggoro",
-        address: "Griya bandung indah",
-        phone: "082116304338",
-        paymentMethod: "Cash",
-        shipping: "Dine In",
-      },
-      details: [
-        {
-          name: "Hazelnut Latte",
-          quantity: 2,
-          size: "Regular",
-          temperature: "Ice",
-          type: "Dine In",
-          price: 40000,
-          unitPrice: 20000,
-        },
-        {
-          name: "Caramel Machiatto",
-          quantity: 2,
-          size: "Regular",
-          temperature: "Ice",
-          type: "Dine In",
-          price: 40000,
-          unitPrice: 20000,
-        },
-      ],
-    },
-    {
-      id: 7,
-      orderNumber: "#12354-09899",
-      date: "2 Frebuary 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "L", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "Pending",
-      total: 40000,
-      customer: {
-        fullName: "John Doe",
-        address: "Jl. Merdeka No. 123",
-        phone: "081234567890",
-        paymentMethod: "Credit Card",
-        shipping: "Delivery",
-      },
-    },
-    {
-      id: 8,
-      orderNumber: "#12354-09900",
-      date: "3 Frebuary 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "L", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "On Progress",
-      total: 40000,
-      customer: {
-        fullName: "Jane Smith",
-        address: "Jl. Sudirman No. 45",
-        phone: "085678901234",
-        paymentMethod: "Cash",
-        shipping: "Dine In",
-      },
-    },
-    {
-      id: 9,
-      orderNumber: "#12354-09901",
-      date: "4 Frebuary 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "L", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "Waiting",
-      total: 40000,
-      customer: {
-        fullName: "Robert Johnson",
-        address: "Jl. Gatot Subroto No. 78",
-        phone: "087812345678",
-        paymentMethod: "Debit Card",
-        shipping: "Delivery",
-      },
-    },
-    {
-      id: 10,
-      orderNumber: "#12354-09902",
-      date: "5 Frebuary 2023",
-      items: [
-        { name: "Hazelnut Latte", size: "L", quantity: 1 },
-        { name: "Caramel Machiatto", size: "L", quantity: 1 },
-      ],
-      status: "On Progress",
-      total: 40000,
-      customer: {
-        fullName: "Sarah Williams",
-        address: "Jl. Thamrin No. 90",
-        phone: "081112223333",
-        paymentMethod: "Cash",
-        shipping: "Dine In",
-      },
-    },
-  ];
+  // const orders = [
+  //   {
+  //     id: 1,
+  //     orderNumber: "#12354-09893",
+  //     date: "26 January 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "R", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "Done",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "Ghaluh Wizard Anggoro",
+  //       address: "Griya bandung indah",
+  //       phone: "082116304338",
+  //       paymentMethod: "Cash",
+  //       shipping: "Dine In",
+  //     },
+  //     details: [
+  //       {
+  //         name: "Hazelnut Latte",
+  //         quantity: 2,
+  //         size: "Regular",
+  //         temperature: "Ice",
+  //         type: "Dine In",
+  //         price: 40000,
+  //         unitPrice: 20000,
+  //       },
+  //       {
+  //         name: "Caramel Machiatto",
+  //         quantity: 2,
+  //         size: "Regular",
+  //         temperature: "Ice",
+  //         type: "Dine In",
+  //         price: 40000,
+  //         unitPrice: 20000,
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 2,
+  //     orderNumber: "#12354-09894",
+  //     date: "27 January 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "L", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "Pending",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "John Doe",
+  //       address: "Jl. Merdeka No. 123",
+  //       phone: "081234567890",
+  //       paymentMethod: "Credit Card",
+  //       shipping: "Delivery",
+  //     },
+  //   },
+  //   {
+  //     id: 3,
+  //     orderNumber: "#12354-09895",
+  //     date: "28 January 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "L", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "On Progress",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "Jane Smith",
+  //       address: "Jl. Sudirman No. 45",
+  //       phone: "085678901234",
+  //       paymentMethod: "Cash",
+  //       shipping: "Dine In",
+  //     },
+  //   },
+  //   {
+  //     id: 4,
+  //     orderNumber: "#12354-09896",
+  //     date: "29 January 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "L", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "Waiting",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "Robert Johnson",
+  //       address: "Jl. Gatot Subroto No. 78",
+  //       phone: "087812345678",
+  //       paymentMethod: "Debit Card",
+  //       shipping: "Delivery",
+  //     },
+  //   },
+  //   {
+  //     id: 5,
+  //     orderNumber: "#12354-09897",
+  //     date: "30 January 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "L", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "On Progress",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "Sarah Williams",
+  //       address: "Jl. Thamrin No. 90",
+  //       phone: "081112223333",
+  //       paymentMethod: "Cash",
+  //       shipping: "Dine In",
+  //     },
+  //   },
+  //   {
+  //     id: 6,
+  //     orderNumber: "#12354-09898",
+  //     date: "1 Frebuari 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "R", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "Done",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "Ghaluh Wizard Anggoro",
+  //       address: "Griya bandung indah",
+  //       phone: "082116304338",
+  //       paymentMethod: "Cash",
+  //       shipping: "Dine In",
+  //     },
+  //     details: [
+  //       {
+  //         name: "Hazelnut Latte",
+  //         quantity: 2,
+  //         size: "Regular",
+  //         temperature: "Ice",
+  //         type: "Dine In",
+  //         price: 40000,
+  //         unitPrice: 20000,
+  //       },
+  //       {
+  //         name: "Caramel Machiatto",
+  //         quantity: 2,
+  //         size: "Regular",
+  //         temperature: "Ice",
+  //         type: "Dine In",
+  //         price: 40000,
+  //         unitPrice: 20000,
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     id: 7,
+  //     orderNumber: "#12354-09899",
+  //     date: "2 Frebuary 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "L", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "Pending",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "John Doe",
+  //       address: "Jl. Merdeka No. 123",
+  //       phone: "081234567890",
+  //       paymentMethod: "Credit Card",
+  //       shipping: "Delivery",
+  //     },
+  //   },
+  //   {
+  //     id: 8,
+  //     orderNumber: "#12354-09900",
+  //     date: "3 Frebuary 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "L", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "On Progress",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "Jane Smith",
+  //       address: "Jl. Sudirman No. 45",
+  //       phone: "085678901234",
+  //       paymentMethod: "Cash",
+  //       shipping: "Dine In",
+  //     },
+  //   },
+  //   {
+  //     id: 9,
+  //     orderNumber: "#12354-09901",
+  //     date: "4 Frebuary 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "L", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "Waiting",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "Robert Johnson",
+  //       address: "Jl. Gatot Subroto No. 78",
+  //       phone: "087812345678",
+  //       paymentMethod: "Debit Card",
+  //       shipping: "Delivery",
+  //     },
+  //   },
+  //   {
+  //     id: 10,
+  //     orderNumber: "#12354-09902",
+  //     date: "5 Frebuary 2023",
+  //     items: [
+  //       { name: "Hazelnut Latte", size: "L", quantity: 1 },
+  //       { name: "Caramel Machiatto", size: "L", quantity: 1 },
+  //     ],
+  //     status: "On Progress",
+  //     total: 40000,
+  //     customer: {
+  //       fullName: "Sarah Williams",
+  //       address: "Jl. Thamrin No. 90",
+  //       phone: "081112223333",
+  //       paymentMethod: "Cash",
+  //       shipping: "Dine In",
+  //     },
+  //   },
+  // ];
+
+  const dispatch = useDispatch();
+  const {
+    items: orders,
+    isLoading,
+    pageInfo,
+  } = useSelector((state) => state.order);
+  const [searchParams, setSearchParams] = useSearchParams();
+  //const [search, setSearch] = useState(searchParams.get("search") || "");
+
+  //const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const filters = {
+      page: Number(searchParams.get("page")) || pageInfo.currentPage,
+      //limit: 5,
+      //search: searchParams.get("title") || "",
+    };
+    dispatch(fetchOrders(filters));
+  }, [dispatch, pageInfo.currentPage, searchParams]);
 
   const updateUrlQueryParam = (key, value) => {
     const url = new URL(window.location.href);
@@ -275,13 +298,15 @@ function OrderList() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Done":
+      case "completed":
         return "bg-[#00A70033] text-[#00A700]";
-      case "Pending":
+      case "pending":
         return "bg-[#D0000033] text-[#D00000]";
-      case "On Progress":
+      case "cancelled":
+        return "bg-[#D0000033] text-[#D00000]";
+      case "on Progress":
         return "bg-[#FF890633] text-[#FF8906]";
-      case "Waiting":
+      case "waiting":
         return "bg-[#4F566533] text-[#4F5665]";
       default:
         return "bg-gray-100 text-gray-800";
@@ -290,13 +315,15 @@ function OrderList() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "Done":
+      case "completed":
         return <CheckCircle size={16} />;
-      case "Pending":
+      case "pending":
         return <Clock size={16} />;
-      case "On Progress":
+      case "cancelled":
+        return <Clock size={16} />;
+      case "on Progress":
         return <AlertCircle size={16} />;
-      case "Waiting":
+      case "waiting":
         return <AlertCircle size={16} />;
       default:
         return null;
@@ -540,7 +567,7 @@ function OrderList() {
                     {/* No. Order */}
                     <td className="px-6 py-4">
                       <div className="text-sm font-semibold text-gray-900">
-                        {order.orderNumber}
+                        {order.order_id}
                       </div>
                     </td>
 
@@ -551,7 +578,7 @@ function OrderList() {
 
                     {/* Order Items */}
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-700">
+                      {/* <div className="text-sm text-gray-700">
                         {order.items.map((item, idx) => (
                           <div key={idx} className="flex items-center gap-1">
                             <span className="text-gray-500">•</span>
@@ -561,6 +588,11 @@ function OrderList() {
                             </span>
                           </div>
                         ))}
+                      </div> */}
+                      <div className="text-sm text-gray-700">
+                          <div className="flex items-center gap-1">
+                            <p>{order.items}</p>
+                          </div>
                       </div>
                     </td>
 

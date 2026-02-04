@@ -46,7 +46,7 @@ function DashNav() {
   ];
 
   return (
-    <header className="top-0 left-0 z-40 w-full border-b-2 border-[#E8E8E8] bg-white px-9 py-4 backdrop-blur-md">
+    <header className="top-0 left-0 z-40 w-full border-b-2 border-[#E8E8E8] bg-white px-9 py-4 backdrop-blur-md min-w-screen">
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-center gap-10">
           <Link to="/">
