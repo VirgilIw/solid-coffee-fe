@@ -7,7 +7,9 @@ import ProductIcon from "../../../assets/adminDashborad/ProductIcon.svg";
 import OrderIcon from "../../../assets/adminDashborad/Bag.svg";
 import UserIcon from "../../../assets/adminDashborad/UserIcon.svg";
 import LogoutIcon from "../../../assets/adminDashborad/LogoutIcon.svg";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { signOut } from "../../../redux/slices/login.slice";
 
 function DashNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,6 +17,14 @@ function DashNav() {
 
   const handleMenuClick = (id) => {
     setActiveMenu(activeMenu === id ? null : id);
+  };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.login.user);
+
+  const handleLogOut = () => {
+    dispatch(signOut());
+    navigate("/login");
   };
 
   const menu = [
@@ -62,18 +72,32 @@ function DashNav() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden items-center justify-center gap-6 md:flex">
-            <Link
-              to="/login"
-              className="border-brand-orange bg-brand-orange hover:text-brand-orange cursor-pointer rounded-[5px] border-2 px-6 py-1.5 text-center text-sm font-bold text-white transition-all hover:bg-transparent"
-            >
-              Sign In
-            </Link>
-            <Link
-              to="/register"
-              className="border-brand-orange bg-brand-orange hover:text-brand-orange cursor-pointer rounded-[5px] border-2 px-6 py-1.5 text-center text-sm font-bold text-white transition-all hover:bg-transparent"
-            >
-              Sign Up
-            </Link>
+            {user ? (
+               <div className="flex items-center gap-3 text-md">
+                 <p className="font-semibold text-brand-orange">{user.email}</p>
+                 <button
+                   onClick={handleLogOut}
+                   className="bg-brand-orange text-md rounded px-3 py-2 font-medium transition hover:bg-orange-500 text-white"
+                 >
+                   Logout
+                 </button>
+               </div>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="border-brand-orange bg-brand-orange hover:text-brand-orange cursor-pointer rounded-[5px] border-2 px-6 py-1.5 text-center text-sm font-bold text-white transition-all hover:bg-transparent"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/register"
+                  className="border-brand-orange bg-brand-orange hover:text-brand-orange cursor-pointer rounded-[5px] border-2 px-6 py-1.5 text-center text-sm font-bold text-white transition-all hover:bg-transparent"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Hamburger Menu Icon */}
@@ -142,19 +166,38 @@ function DashNav() {
             </button>
 
             <div className="mt-8 flex flex-col gap-4">
-              <button className="border-brand-orange bg-brand-orange rounded-[5px] border-2 px-4 py-2 text-center font-bold text-[#0B0909] transition-all">
-                <Link to="/login">Sign In</Link>
-              </button>
-              <button className="rounded-[5px] border-2 border-white bg-transparent px-4 py-2 text-center font-bold text-white transition-all hover:bg-white hover:text-black">
-                <Link to="/register">Sign Up</Link>
-              </button>
+              {user ? (
+                 <>
+                   <p className="font-semibold text-white text-center">{user.email}</p>
+                   <button 
+                     onClick={handleLogOut}
+                     className="border-brand-orange bg-brand-orange rounded-[5px] border-2 px-4 py-2 text-center font-bold text-[#0B0909] transition-all"
+                   >
+                     Logout
+                   </button>
+                 </>
+              ) : (
+                <>
+                  <button className="border-brand-orange bg-brand-orange rounded-[5px] border-2 px-4 py-2 text-center font-bold text-[#0B0909] transition-all">
+                    <Link to="/login">Sign In</Link>
+                  </button>
+                  <button className="rounded-[5px] border-2 border-white bg-transparent px-4 py-2 text-center font-bold text-white transition-all hover:bg-white hover:text-black">
+                    <Link to="/register">Sign Up</Link>
+                  </button>
+                </>
+              )}
             </div>
           </div>
           <div className="flex flex-col items-center justify-center">
             {menu.map((item) => (
               <button
                 key={item.id}
-                onClick={() => handleMenuClick(item.id)}
+                onClick={() => {
+                   if (item.name === "Keluar") {
+                     handleLogOut();
+                   }
+                   handleMenuClick(item.id);
+                }}
                 className={`cursor-pointer transition-all ${activeMenu == item.id ? "bg-brand-orange" : ""} flex w-full items-center gap-3 rounded-lg border-0 p-2 pl-15 text-white`}
               >
                 <Link to={item.path} className="flex gap-3">

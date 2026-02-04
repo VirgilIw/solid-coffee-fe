@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router'
+import { useDispatch, useSelector } from "react-redux";
+import { signOut } from "../../../redux/slices/login.slice";
 import CoffeeIcon from "../../../assets/images/coffe-shop.svg"
 import Chart from "../../../assets/home/ShoppingCart.svg"
 import Search from "../../../assets/home/Search.svg"
@@ -7,6 +9,12 @@ import Search from "../../../assets/home/Search.svg"
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.login.user);
+
+  const handleLogOut = () => {
+    dispatch(signOut());
+  };
 
   const navMenus = [
     { name: 'Home', path: '/' },
@@ -49,8 +57,22 @@ export default function Navbar() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex gap-6 justify-center items-center">
-            <Link to="/login" className="text-white border-2 border-brand-orange rounded-[5px] py-1.5 px-6 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-sm">Sign In</Link>
-            <Link to="/register" className="text-white border-2 border-brand-orange rounded-[5px] py-1.5 px-6 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-sm">Sign Up</Link>
+            {user ? (
+               <div className="flex items-center gap-3 text-md">
+                 <p className="font-semibold text-white">{user.email}</p>
+                 <button
+                   onClick={handleLogOut}
+                   className="bg-brand-orange text-md rounded px-3 py-2 font-medium transition hover:bg-orange-500 text-white"
+                 >
+                   Logout
+                 </button>
+               </div>
+            ) : (
+                <>
+                  <Link to="/login" className="text-white border-2 border-brand-orange rounded-[5px] py-1.5 px-6 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-sm">Sign In</Link>
+                  <Link to="/register" className="text-white border-2 border-brand-orange rounded-[5px] py-1.5 px-6 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-sm">Sign Up</Link>
+                </>
+            )}
           </div>
 
           {/* Hamburger Menu Icon */}
@@ -95,8 +117,19 @@ export default function Navbar() {
           </ul>
 
           <div className="flex flex-col gap-4 mt-8">
-            <Link to="/login" onClick={() => setIsMenuOpen(false)} className="text-[#0B0909] border-2 border-brand-orange rounded-[5px] py-2 px-4 text-center bg-brand-orange font-bold transition-all">Sign In</Link>
-            <Link to="/register" onClick={() => setIsMenuOpen(false)} className="text-white border-2 border-white rounded-[5px] py-2 px-4 text-center bg-transparent font-bold transition-all hover:bg-white hover:text-black">Sign Up</Link>
+            {user ? (
+               <>
+                 <p className="font-semibold text-white text-center mb-2">{user.email}</p>
+                 <button onClick={handleLogOut} className="text-[#0B0909] border-2 border-brand-orange rounded-[5px] py-2 px-4 text-center bg-brand-orange font-bold transition-all">
+                   Logout
+                 </button>
+               </>
+            ) : (
+                <>
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="text-[#0B0909] border-2 border-brand-orange rounded-[5px] py-2 px-4 text-center bg-brand-orange font-bold transition-all">Sign In</Link>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="text-white border-2 border-white rounded-[5px] py-2 px-4 text-center bg-transparent font-bold transition-all hover:bg-white hover:text-black">Sign Up</Link>
+                </>
+            )}
           </div>
         </div>
       </div>

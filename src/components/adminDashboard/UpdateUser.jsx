@@ -54,17 +54,16 @@ function UpdateUser({ isOpen, onClose, user }) {
 
         try {
             const dataToSend = new FormData()
+            dataToSend.append("id", user.id)
             Object.keys(formData).forEach(key => {
                 dataToSend.append(key, formData[key])
             })
+            
             if (selectedImage) {
                 dataToSend.append("photo", selectedImage)
             }
 
-            const resultAction = await dispatch(updateUser({ 
-                id: user.id, 
-                userData: dataToSend 
-            }))
+            const resultAction = await dispatch(updateUser(dataToSend))
             
             if (updateUser.fulfilled.match(resultAction)) {
                 dispatch(fetchUsers())

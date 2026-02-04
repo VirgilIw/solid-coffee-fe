@@ -2,11 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchUsers = createAsyncThunk(
     "user/fetchUsers",
-    async (page, { rejectWithValue }) => {
+    async ({ page } = {}, { rejectWithValue }) => {
         try {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjYsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMjI1MzgwfQ.RjzSLTUMi9vvW05FX2ZLWNs-3ujjej_UKJcmbo5XNLo";
+            const token = localStorage.getItem("token");
             const pageNum = page || 1;
-
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/?page=${pageNum}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -29,7 +28,7 @@ export const insertUser = createAsyncThunk(
     "user/insertUser",
     async (userData, { rejectWithValue }) => {
         try {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjYsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMjI1MzgwfQ.RjzSLTUMi9vvW05FX2ZLWNs-3ujjej_UKJcmbo5XNLo";
+            const token = localStorage.getItem("token");
 
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/`, {
                 method: "POST",
@@ -54,11 +53,11 @@ export const insertUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
     "user/updateUser",
-    async ({ id, userData }, { rejectWithValue }) => {
+    async (userData, { rejectWithValue }) => {
         try {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjYsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMjI1MzgwfQ.RjzSLTUMi9vvW05FX2ZLWNs-3ujjej_UKJcmbo5XNLo";
+            const token = localStorage.getItem("token");
 
-            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -83,7 +82,7 @@ export const deleteUser = createAsyncThunk(
     "user/deleteUser",
     async (id, { rejectWithValue }) => {
         try {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjYsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMjI1MzgwfQ.RjzSLTUMi9vvW05FX2ZLWNs-3ujjej_UKJcmbo5XNLo";
+            const token = localStorage.getItem("token");
 
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/${id}`, {
                 method: "DELETE",
