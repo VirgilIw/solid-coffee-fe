@@ -29,6 +29,7 @@ export default function Register() {
   });
 
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [successMsg, setSuccessMsg] = React.useState("");
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -56,6 +57,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const API_URL = import.meta.env.VITE_SOLID_API_URL;
     if (!form.name || !form.email || !form.password || !form.confirmPassword) {
       setErrorMessage("All fields are required");
       return;
@@ -79,7 +81,7 @@ export default function Register() {
         password: form.password,
       };
 
-      const res = await fetch("http://192.168.50.221:8080/auth/new", {
+      const res = await fetch(`${API_URL}/auth/new`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,6 +96,7 @@ export default function Register() {
       }
 
       console.log("REGISTER SUCCESS:", data);
+      setSuccessMsg("Register success: ", data);
 
       dispatch(
         register({
@@ -248,7 +251,6 @@ export default function Register() {
             {errorMessage && (
               <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
             )}
-
             {/* Submit */}
             <button
               type="submit"
@@ -273,6 +275,24 @@ export default function Register() {
 
           <MediaAuth />
         </div>
+        {successMsg && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div className="w-[90%] max-w-sm rounded-xl bg-white p-6 shadow-xl">
+              <h2 className="mb-2 text-lg font-semibold text-green-600">
+                Success
+              </h2>
+
+              <p className="text-sm text-gray-600">{successMsg}</p>
+
+              <button
+                onClick={() => setSuccessMsg("")}
+                className="mt-5 w-full rounded-lg bg-orange-500 py-2 text-white hover:bg-green-600"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );
