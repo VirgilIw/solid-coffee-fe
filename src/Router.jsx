@@ -18,37 +18,53 @@ import AdminProductList from "./pages/AdminProductList";
 import AdminOrderList from "./pages/AdminOrderList";
 import Profile from "./pages/Profile";
 import ProfileLayout from "./components/layouts/ProfileLayout";
+import PrivateRoute from "./components/routes/PrivateRoute";
+import AdminRoute from "./components/routes/AdminRoute";
 
 export default function Router() {
   return (
     <>
       <Routes>
+        {/* PUBLIC */}
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
         </Route>
-        <Route path="dashboard" element={<DashboardLayout />}>
-          <Route path="admin">
-            <Route index element={<Admin/>} />
-            <Route path="product-list" element={<AdminProductList/>} />
-            <Route path="order-list" element={<AdminOrderList/>} />
-            <Route path="users-list" element={<AdminUserlist/>} />
-          </Route>
-        </Route>
-        <Route path="product" element={<ProductLayout />}>
-          <Route index element={<Product />} />
-          <Route path="detail-product/:id" element={<ProductDetail />} />
-          <Route path="checkout-product" element={<CheckoutProduct />} />
-        </Route>
-        <Route path="order" element={<OrderLayout />}>
-          <Route path="detail" element={<DetailOrder />} />
-          <Route path="history" element={<HistoryOrder />} />
-        </Route>
-        <Route path="profile" element={<ProfileLayout />}>
-          <Route index element={<Profile />} />
-        </Route>
+
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
+
+        {/* PRIVATE USER */}
+        <Route element={<PrivateRoute />}>
+          <Route path="product" element={<ProductLayout />}>
+            <Route index element={<Product />} />
+            <Route path="detail-product/:id" element={<ProductDetail />} />
+            <Route path="checkout-product" element={<CheckoutProduct />} />
+          </Route>
+
+          <Route path="order" element={<OrderLayout />}>
+            <Route path="detail" element={<DetailOrder />} />
+            <Route path="history" element={<HistoryOrder />} />
+          </Route>
+
+          <Route path="profile" element={<ProfileLayout />}>
+            <Route index element={<Profile />} />
+          </Route>
+        </Route>
+
+        {/* PRIVATE ADMIN */}
+        <Route element={<AdminRoute />}>
+          <Route path="dashboard" element={<DashboardLayout />}>
+            <Route path="admin">
+              <Route index element={<Admin />} />
+              <Route path="product-list" element={<AdminProductList />} />
+              <Route path="order-list" element={<AdminOrderList />} />
+              <Route path="users-list" element={<AdminUserlist />} />
+            </Route>
+          </Route>
+        </Route>
+
+        {/* 404 */}
         <Route
           path="*"
           element={
