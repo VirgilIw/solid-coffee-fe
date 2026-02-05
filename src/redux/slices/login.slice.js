@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { jwtDecode } from "jwt-decode";
 
 export const loginThunk = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {
+    // console.log(payload);
     try {
       const API_URL = import.meta.env.VITE_SOLID_API_URL;
 
@@ -15,15 +17,20 @@ export const loginThunk = createAsyncThunk(
       });
 
       const data = await res.json();
-
+      // console.log(data);
       if (!res.ok) {
         throw new Error(data.message);
       }
 
-      // simpan token
-      localStorage.setItem("token", data.data.token);
+      const token = data.data.token;
 
-      return data.data;
+      const decodedUser = jwtDecode(token);
+      // console.log(decodedUser);
+      return {
+        email: payload.email,
+        token,
+        user: decodedUser,
+      };
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -51,7 +58,6 @@ const loginSlice = createSlice({
     signOut: (state) => {
       state.user = null;
       state.getUserStatus.user.isSuccess = false;
-      localStorage.removeItem("token");
     },
   },
   extraReducers: (builder) => {
@@ -64,11 +70,11 @@ const loginSlice = createSlice({
       fulfilled: (prevState, action) => {
         prevState.getUserStatus.user.isLoading = false;
         prevState.getUserStatus.user.isSuccess = true;
+
         prevState.user = {
-          email: action.meta.arg.email, // dari form login
-          token: action.payload.token,
+          email: action.payload.email, // dari form
         };
-        // console.log("PAYLOAD LOGIN:", payload);
+        // console.log("PAYLOAD LOGIN:", action.payload);
       },
       rejected: (prevState, { payload }) => {
         prevState.getUserStatus.user.isLoading = false;
