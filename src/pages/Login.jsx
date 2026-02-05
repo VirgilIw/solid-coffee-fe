@@ -27,7 +27,7 @@ export const Login = () => {
     setOpenEye(!openEye);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrMessage("");
 
@@ -35,9 +35,13 @@ export const Login = () => {
       setErrMessage("Email and password can't be empty");
       return;
     }
-    navigate("/");
 
-    dispatch(loginThunk(form));
+    try {
+      await dispatch(loginThunk(form)).unwrap();
+      navigate("/"); 
+    } catch (err) {
+      setErrMessage(err); 
+    }
   };
 
   return (
