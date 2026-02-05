@@ -16,6 +16,8 @@ export const Login = () => {
     email: "",
     password: "",
   });
+  const [errMessage, setErrMessage] = React.useState("");
+  //
   const API_URL = import.meta.env.VITE_SOLID_API_URL;
 
   const navigate = useNavigate();
@@ -28,10 +30,12 @@ export const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      email: form.email,
-      password: form.password,
-    };
+    setErrMessage("");
+
+    if (!form.email.trim() || !form.password.trim()) {
+      setErrMessage("Email and password can't be empty");
+      return;
+    }
 
     try {
       const respon = await fetch(`${API_URL}/auth/`, {
@@ -39,24 +43,29 @@ export const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(form),
       });
 
       const data = await respon.json();
 
       if (!respon.ok) {
-        throw new Error(data.message || "Login failed");
+        // lempar status biar bisa dibaca di catch
+        throw { status: respon.status, message: data.message };
       }
 
-      // simpan token
-      localStorage.setItem("token", data.data.token);
-
-      // baru simpan ke redux
-      dispatch(loginThunk(form));
+      dispatch(loginThunk(data));
 
       navigate("/");
     } catch (error) {
-      console.log(error.message);
+      if (error.status === 401) {
+        setErrMessage("Wrong Email or Password");
+      } else if (error.status === 404) {
+        setErrMessage("User not Found");
+      } else if (error.status === 500) {
+        setErrMessage("Server is in trouble, try later");
+      } else {
+        setErrMessage("Something went wrong, try again");
+      }
     }
   };
 
@@ -153,11 +162,14 @@ export const Login = () => {
 
             {/* Forgot */}
             <div className="my-4 flex justify-end lg:my-6 lg:flex lg:justify-end">
+              {errMessage && (
+                <p className="absolute left-10 text-red-500">{errMessage}</p>
+              )}
+
               <Link to="/forgot-password" className="text-sm text-orange-400">
                 Lupa Password?
               </Link>
             </div>
-
             {/* Submit */}
             <button
               type="submit"
