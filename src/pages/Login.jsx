@@ -135,11 +135,10 @@ export const Login = () => {
             </div>
 
             {/* Forgot */}
-            <div className="my-4 flex justify-end lg:my-6 lg:flex lg:justify-end">
+            <div className="my-4 flex justify-between lg:my-6 lg:flex">
               {errMessage && (
-                <p className="absolute left-10 text-red-500">{errMessage}</p>
+                <p className="text-red-500 lg:text-md text-sm">{errMessage}</p>
               )}
-
               <Link to="/forgot-password" className="text-sm text-orange-400">
                 Lupa Password?
               </Link>
