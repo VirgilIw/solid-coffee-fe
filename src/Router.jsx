@@ -18,6 +18,7 @@ import AdminProductList from "./pages/AdminProductList";
 import AdminOrderList from "./pages/AdminOrderList";
 import Profile from "./pages/Profile";
 import ProfileLayout from "./components/layouts/ProfileLayout";
+import NotFound from "./components/ui/NotFound";
 
 export default function Router() {
   return (
@@ -40,7 +41,7 @@ export default function Router() {
           <Route path="checkout-product" element={<CheckoutProduct />} />
         </Route>
         <Route path="order" element={<OrderLayout />}>
-          <Route path="detail" element={<DetailOrder />} />
+          <Route path="detail/:id" element={<DetailOrder />} />
           <Route path="history" element={<HistoryOrder />} />
         </Route>
         <Route path="profile" element={<ProfileLayout />}>
@@ -51,11 +52,7 @@ export default function Router() {
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route
           path="*"
-          element={
-            <div className="flex h-dvh items-center justify-center text-5xl font-bold">
-              404 NOT FOUND
-            </div>
-          }
+          element={<NotFound/>}
         />
       </Routes>
     </>
