@@ -73,6 +73,7 @@ const loginSlice = createSlice({
 
         prevState.user = {
           email: action.payload.email, // dari form
+           ...action.payload.user,
         };
         // console.log("PAYLOAD LOGIN:", action.payload);
       },
