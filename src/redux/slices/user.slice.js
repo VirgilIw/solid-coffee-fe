@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchUsers = createAsyncThunk(
     "user/fetchUsers",
-    async (page, { getState, rejectWithValue }) => {
+    async (params, { getState, rejectWithValue }) => {
         try {
             const token = getState().login.user?.token || "";
-            const pageNum = page || 1;
+            const pageNum = typeof params === 'object' ? params.page : (params || 1);
 
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/?page=${pageNum}`, {
                 headers: {
