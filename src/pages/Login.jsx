@@ -17,7 +17,6 @@ export const Login = () => {
     password: "",
   });
   const [errMessage, setErrMessage] = React.useState("");
-  //
   const API_URL = import.meta.env.VITE_SOLID_API_URL;
 
   const navigate = useNavigate();
