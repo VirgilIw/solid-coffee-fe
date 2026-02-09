@@ -2,10 +2,11 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchUsers = createAsyncThunk(
     "user/fetchUsers",
-    async ({ page } = {}, { rejectWithValue }) => {
+    async (page, { getState, rejectWithValue }) => {
         try {
-            const token = localStorage.getItem("token");
+            const token = getState().login.user?.token || "";
             const pageNum = page || 1;
+
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/?page=${pageNum}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -26,9 +27,9 @@ export const fetchUsers = createAsyncThunk(
 
 export const insertUser = createAsyncThunk(
     "user/insertUser",
-    async (userData, { rejectWithValue }) => {
+    async (userData, { getState, rejectWithValue }) => {
         try {
-            const token = localStorage.getItem("token");
+            const token = getState().login.user?.token || "";
 
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/`, {
                 method: "POST",
@@ -53,11 +54,11 @@ export const insertUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
     "user/updateUser",
-    async (userData, { rejectWithValue }) => {
+    async ({ id, userData }, { getState, rejectWithValue }) => {
         try {
-            const token = localStorage.getItem("token");
+            const token = getState().login.user?.token || "";
 
-            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/`, {
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Bearer ${token}`
@@ -80,9 +81,9 @@ export const updateUser = createAsyncThunk(
 
 export const deleteUser = createAsyncThunk(
     "user/deleteUser",
-    async (id, { rejectWithValue }) => {
+    async (id, { getState, rejectWithValue }) => {
         try {
-            const token = localStorage.getItem("token");
+            const token = getState().login.user?.token || "";
 
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/user/${id}`, {
                 method: "DELETE",
@@ -123,6 +124,40 @@ const userSlice = createSlice({
                 state.items = Array.isArray(fetchedData) ? fetchedData : [];
             })
             .addCase(fetchUsers.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+            .addCase(insertUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(insertUser.fulfilled, (state) => {
+                state.isLoading = false;
+            })
+            .addCase(insertUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+            .addCase(updateUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(updateUser.fulfilled, (state) => {
+                state.isLoading = false;
+            })
+            .addCase(updateUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+            // Delete User
+            .addCase(deleteUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(deleteUser.fulfilled, (state) => {
+                state.isLoading = false;
+            })
+            .addCase(deleteUser.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });
