@@ -150,7 +150,7 @@ export const addReview = createAsyncThunk(
         try {
             const token = getState().login.user?.token || "";
 
-            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/orders/review/`, {
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/orders/review`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
