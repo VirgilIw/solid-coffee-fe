@@ -2,12 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchOrders = createAsyncThunk(
     "order/fetchOrders",
-<<<<<<< HEAD
-    async ({ page = 1, noOrder = "", status = ""}, { getState, rejectWithValue }) => {
-=======
     // async ({ page = 1, limit = 5, noOrder = "", status = "" }, { getState, rejectWithValue }) => {
     async ({ page = 1, noOrder = "", status = "" }, { getState, rejectWithValue }) => {
->>>>>>> master
         try {
             const params = new URLSearchParams();
             params.append("page", page);
