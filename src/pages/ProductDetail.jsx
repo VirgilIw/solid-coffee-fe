@@ -102,20 +102,35 @@ export default function ProductDetail() {
         {/* LEFT - IMAGES */}
         <section className="flex flex-col gap-5">
           <img
-            src={detailData.images}
+            src={
+              Array.isArray(detailData.images) 
+                ? detailData.images[0] 
+                : (typeof detailData.images === 'string' ? detailData.images.split(',')[0] : detailData.images)
+            }
             alt="detail-coffe"
             className="w-full rounded-lg object-cover"
           />
 
           <div className="grid grid-cols-3 gap-3 lg:gap-6">
-            {[detail, detail, detail].map((img, i) => (
-              <img
-                key={i}
-                src={detailData.images}
-                alt="detail-coffe"
-                className="aspect-square w-full rounded-md object-cover"
-              />
-            ))}
+            {(Array.isArray(detailData.images) || typeof detailData.images === 'string') ? (
+              (Array.isArray(detailData.images) ? detailData.images : detailData.images.split(',')).map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt={`detail-coffee-${i}`}
+                  className="aspect-square w-full rounded-md object-cover"
+                />
+              ))
+            ) : (
+              [detail, detail, detail].map((img, i) => (
+                <img
+                  key={i}
+                  src={detailData.images || img}
+                  alt="detail-coffe"
+                  className="aspect-square w-full rounded-md object-cover"
+                />
+              ))
+            )}
           </div>
         </section>
 

@@ -116,11 +116,10 @@ function ProductList() {
   const dispatch = useDispatch();
   const {
     items: products,
-    isLoading,
     pageInfo,
   } = useSelector((state) => state.product);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState(searchParams.get("search") || "");
+
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -314,7 +313,15 @@ function ProductList() {
                         <div className="flex items-center">
                           <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-gray-200">
                             <img
-                              src={product.image_products}
+                              src={
+                                product.image_products
+                                  ? `http://192.168.50.221:8080/static/img/products/${
+                                      Array.isArray(product.image_products) 
+                                        ? product.image_products[0] 
+                                        : (typeof product.image_products === 'string' ? product.image_products.split(',')[0] : product.image_products)
+                                    }`
+                                  : ""
+                              }
                               alt={product.name}
                               className="h-full w-full object-cover object-center"
                               onError={(e) => {
