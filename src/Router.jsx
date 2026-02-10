@@ -15,6 +15,7 @@ import AdminUserlist from "./pages/AdminUserlist";
 import ProductDetail from "./pages/ProductDetail";
 import CheckoutProduct from "./pages/CheckoutProduct";
 import AdminProductList from "./pages/AdminProductList";
+import AdminMenuList from "./pages/AdminMenuList";
 import AdminOrderList from "./pages/AdminOrderList";
 import Profile from "./pages/Profile";
 import ProfileLayout from "./components/layouts/ProfileLayout";
@@ -30,6 +31,7 @@ export default function Router() {
           <Route path="admin">
             <Route index element={<Admin/>} />
             <Route path="product-list" element={<AdminProductList/>} />
+            <Route path="menu-list" element={<AdminMenuList/>} />
             <Route path="order-list" element={<AdminOrderList/>} />
             <Route path="users-list" element={<AdminUserlist/>} />
           </Route>

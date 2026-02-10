@@ -298,16 +298,12 @@ function OrderList() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "completed":
+      case "done":
         return "bg-[#00A70033] text-[#00A700]";
-      case "pending":
-        return "bg-[#D0000033] text-[#D00000]";
       case "cancelled":
         return "bg-[#D0000033] text-[#D00000]";
-      case "on Progress":
+      case "pending":
         return "bg-[#FF890633] text-[#FF8906]";
-      case "waiting":
-        return "bg-[#4F566533] text-[#4F5665]";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -315,15 +311,11 @@ function OrderList() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "completed":
+      case "done":
         return <CheckCircle size={16} />;
       case "pending":
         return <Clock size={16} />;
       case "cancelled":
-        return <Clock size={16} />;
-      case "on Progress":
-        return <AlertCircle size={16} />;
-      case "waiting":
         return <AlertCircle size={16} />;
       default:
         return null;

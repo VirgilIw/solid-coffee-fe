@@ -2,11 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchOrders = createAsyncThunk(
     "order/fetchOrders",
-    async ({ page = 1, limit = 5, noOrder = "", status = ""}, { rejectWithValue }) => {
+    async ({ page = 1, noOrder = "", status = ""}, { getState, rejectWithValue }) => {
         try {
             const params = new URLSearchParams();
             params.append("page", page);
-            //params.append("limit", limit);
 
             if (noOrder) {
                 params.append("No.Order", noOrder);
@@ -15,8 +14,7 @@ export const fetchOrders = createAsyncThunk(
                 params.append("status", status.toLowerCase());
             }
 
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMjUzMTk0fQ._Up12Vw3w-gbGEVlKr6wkxNvzTgcQoQQ_ITlCKEuswE";
-                                        // http://192.168.50.221:8080/admin/orders/?page=1
+            const token = getState().login.user?.token || "";
             const response = await fetch(`http://192.168.50.221:8080/admin/orders/?${params.toString()}`, {
                 method: "GET",
                 headers: {
@@ -40,9 +38,9 @@ export const fetchOrders = createAsyncThunk(
 
 export const insertOrder = createAsyncThunk(
     "order/addOrder",
-    async (orderData, { rejectWithValue }) => {
+    async (orderData, { getState, rejectWithValue }) => {
         try {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMjUzMTk0fQ._Up12Vw3w-gbGEVlKr6wkxNvzTgcQoQQ_ITlCKEuswE";
+            const token = getState().login.user?.token || "";
 
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/orders/`, {
                 method: "POST",
@@ -67,9 +65,9 @@ export const insertOrder = createAsyncThunk(
 
 export const updateOrder = createAsyncThunk(
     "order/updateOrder",
-    async ({ id, orderData }, { rejectWithValue }) => {
+    async ({ id, orderData }, { getState, rejectWithValue }) => {
         try {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMTc1MDQzfQ.tnMJ5IB00SPwLleE84Fo-jP4bOLj_pycnR1HZKrypx4";
+            const token = getState().login.user?.token || "";
 
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/orders/${id}`, {
                 method: "PATCH",
@@ -94,9 +92,9 @@ export const updateOrder = createAsyncThunk(
 
 export const deleteOrder = createAsyncThunk(
     "order/deleteorder",
-    async (id, { rejectWithValue }) => {
+    async (id, { getState,rejectWithValue }) => {
         try {
-            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInJvbGUiOiJhZG1pbiIsImlzcyI6IndpYmlzYW5hIiwiZXhwIjoxNzcwMTc1MDQzfQ.tnMJ5IB00SPwLleE84Fo-jP4bOLj_pycnR1HZKrypx4";
+            const token = getState().login.user?.token || "";
 
             const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/admin/orders/${id}`, {
                 method: "DELETE",

@@ -3,17 +3,17 @@ import { Upload } from "lucide-react";
 import Xicon from "../../assets/adminDashborad/XCircle.svg";
 import Image from "../../assets/adminDashborad/Image.svg";
 import { useDispatch } from "react-redux";
-import { insertProduct } from "../../redux/slices/product.slice";
+import { insertMenu } from "../../redux/slices/menu.slice";
 import Modal from "../modal/Modal";
 
-function AddProducts({ isAddbarOpen, toggleAddbar }) {
+function AddMenu({ isAddbarOpen, toggleAddbar }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   const dispatch = useDispatch();
-  const [newProduct, setNewProduct] = useState({
-    product_name: "",
+  const [newMenu, setNewMenu] = useState({
+    menu_name: "",
     price: "",
     description: "",
     stock: "",
@@ -23,7 +23,7 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewProduct((prev) => ({
+    setNewMenu((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -31,9 +31,9 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
 
   const handlePhotoUpload = (e) => {
     const files = Array.from(e.target.files);
-    setNewProduct((prev) => ({ ...prev, images_file: files }));
+    setNewMenu((prev) => ({ ...prev, images_file: files }));
     const previewUrls = files.map((file) => URL.createObjectURL(file));
-    setNewProduct((prev) => ({
+    setNewMenu((prev) => ({
       ...prev,
       photoPreview: previewUrls,
     }));
@@ -43,17 +43,17 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("product_name", newProduct.product_name);
-    formData.append("price", newProduct.price);
-    formData.append("description", newProduct.description);
-    newProduct.images_file.map((file) => formData.append("images_file", file));
+    formData.append("menu_name", newMenu.menu_name);
+    formData.append("price", newMenu.price);
+    formData.append("description", newMenu.description);
+    newMenu.images_file.map((file) => formData.append("images_file", file));
     try {
-      dispatch(insertProduct(formData));
+      dispatch(insertMenu(formData));
 
-      console.log("New Product:", newProduct);
+      console.log("New Menu:", newMenu);
 
-      setNewProduct({
-        product_name: "",
+      setNewMenu({
+        menu_name: "",
         price: "",
         description: "",
         stock: "",
@@ -69,9 +69,9 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
 
   useEffect(() => {
     return () => {
-      newProduct.photoPreview.forEach((url) => URL.revokeObjectURL(url));
+      newMenu.photoPreview.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, [newProduct.photoPreview]);
+  }, [newMenu.photoPreview]);
 
   return (
     <div>
@@ -80,7 +80,7 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
       >
         <div className="flex h-full flex-col overflow-y-auto p-6">
           <div className="flex items-center justify-between py-4">
-            <h2 className="text-xl font-bold text-gray-800">Add Product</h2>
+            <h2 className="text-xl font-bold text-gray-800">Add Menu</h2>
             <button
               onClick={toggleAddbar}
               className="rounded-lg bg-white p-2 hover:brightness-75"
@@ -91,24 +91,24 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <p className="mb-4 text-lg font-semibold text-gray-800">
-                Photo Product
+                Photo Menu
               </p>
               <div className="flex flex-col">
                 <div className="mb-4 flex flex-wrap gap-4">
-                  {newProduct.photoPreview.length > 0 ? (
+                  {newMenu.photoPreview.length > 0 ? (
                     <div className="relative">
-                      {newProduct.photoPreview.map((file, index) => (
+                      {newMenu.photoPreview.map((file, index) => (
                         <img
                           key={index}
                           src={file}
-                          alt="Product preview"
+                          alt="menu preview"
                           className="h-48 w-48 rounded-lg border-2 border-gray-200 object-cover"
                         />
                       ))}
                       <button
                         type="button"
                         onClick={() =>
-                          setNewProduct((prev) => ({
+                          setNewMenu((prev) => ({
                             ...prev,
                             images_file: [],
                             photoPreview: [],
@@ -146,14 +146,14 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
             <div className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Product name
+                  menu name
                 </label>
                 <input
                   type="text"
-                  name="product_name"
-                  value={newProduct.product_name}
+                  name="menu_name"
+                  value={newMenu.menu_name}
                   onChange={handleInputChange}
-                  placeholder="Enter Product Name"
+                  placeholder="Enter Menu Name"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
                   required
                 />
@@ -167,9 +167,9 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
                   <input
                     type="number"
                     name="price"
-                    value={newProduct.price}
+                    value={newMenu.price}
                     onChange={handleInputChange}
-                    placeholder="Enter Product Price"
+                    placeholder="Enter Menu Price"
                     className="w-full rounded-lg border border-gray-300 p-3 transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
                     required
                   />
@@ -182,9 +182,9 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
                 </label>
                 <textarea
                   name="description"
-                  value={newProduct.description}
+                  value={newMenu.description}
                   onChange={handleInputChange}
-                  placeholder="Enter Product Description"
+                  placeholder="Enter Menu Description"
                   rows="4"
                   className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
                   required
@@ -198,9 +198,9 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
                 <input
                   type="number"
                   name="stock"
-                  value={newProduct.stock}
+                  value={newMenu.stock}
                   onChange={handleInputChange}
-                  placeholder="Enter Product Stock"
+                  placeholder="Enter Menu Stock"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
@@ -210,7 +210,7 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
                   type="submit"
                   className="bg-brand-orange w-full rounded-lg p-2 font-medium text-black shadow-sm transition-colors hover:brightness-75"
                 >
-                  Save Product
+                  Save Menu
                 </button>
               </div>
             </div>
@@ -235,4 +235,4 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
   );
 }
 
-export default AddProducts;
+export default AddMenu;
