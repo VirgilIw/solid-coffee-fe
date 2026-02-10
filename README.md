@@ -1,10 +1,10 @@
 # Solid Coffee Shop Application
 
-A web application solid coffee shop
+A web application solid coffee shop, built with React JS and following clean architecture principles.
 
 ## Description
 
-Coming Soon
+This web application was built to handle the online coffee buying and selling business between coffee shops and buyers/users.
 
 ## Getting Started
 
