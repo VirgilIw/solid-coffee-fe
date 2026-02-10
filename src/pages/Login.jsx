@@ -16,6 +16,7 @@ export const Login = () => {
     email: "",
     password: "",
   });
+  const [errMessage, setErrMessage] = React.useState("");
   const API_URL = import.meta.env.VITE_SOLID_API_URL;
 
   const navigate = useNavigate();
@@ -27,36 +28,18 @@ export const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrMessage("");
 
-    const payload = {
-      email: form.email,
-      password: form.password,
-    };
+    if (!form.email.trim() || !form.password.trim()) {
+      setErrMessage("Email and password can't be empty");
+      return;
+    }
 
     try {
-      const respon = await fetch(`${API_URL}/auth/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await respon.json();
-
-      if (!respon.ok) {
-        throw new Error(data.message || "Login failed");
-      }
-
-      // simpan token
-      localStorage.setItem("token", data.data.token);
-
-      // baru simpan ke redux
-      dispatch(loginThunk(form));
-
-      navigate("/");
-    } catch (error) {
-      console.log(error.message);
+      await dispatch(loginThunk(form)).unwrap();
+      navigate("/"); 
+    } catch (err) {
+      setErrMessage(err); 
     }
   };
 
@@ -152,12 +135,14 @@ export const Login = () => {
             </div>
 
             {/* Forgot */}
-            <div className="my-4 flex justify-end lg:my-6 lg:flex lg:justify-end">
+            <div className="my-4 flex justify-between lg:my-6 lg:flex">
+              {errMessage && (
+                <p className="text-red-500 lg:text-md text-sm">{errMessage}</p>
+              )}
               <Link to="/forgot-password" className="text-sm text-orange-400">
                 Lupa Password?
               </Link>
             </div>
-
             {/* Submit */}
             <button
               type="submit"

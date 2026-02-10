@@ -3,19 +3,28 @@ import ArrowRight from "../assets/home/arrow-right.png";
 import FoodImage1 from "../assets/home/Food-1.png";
 import Chart from "../assets/images/ShoppingCart.svg";
 import React from "react";
-import detail from "../assets/images/detail.svg"
+import detail from "../assets/images/detail.svg";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 
 export default function ProductDetail() {
-  const [counter, setCounter] = React.useState(0);
+  const [counter, setCounter] = React.useState(1);
   const [unClick, setUnClick] = React.useState(null);
-  // const [searchParams, setSearchParams]= React.useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [detailData, setDetailData] = React.useState({});
 
+  // const search = searchParams.get("search") || "";
+  //
+  const { id } = useParams();
+
+  const API_URL = import.meta.env.VITE_SOLID_API_URL;
+  //
   const handleIncrement = () => {
     setCounter((counter) => {
       return counter + 1;
     });
+    updateParams("qty", counter + 1);
   };
-
+  //
   const handleDecrement = () => {
     if (counter <= 0) {
       return;
@@ -23,8 +32,9 @@ export default function ProductDetail() {
     setCounter((counter) => {
       return counter - 1;
     });
+    updateParams("qty", counter - 1);
   };
-
+  //
   const handleInput = (value) => {
     setUnClick((prev) => {
       if (prev === value) {
@@ -34,14 +44,65 @@ export default function ProductDetail() {
       }
     });
   };
+  //
+  React.useEffect(() => {
+    (async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${API_URL}/products/${id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+
+        const data = await res.json();
+        console.log("test:", data);
+        setDetailData(data.data);
+      } catch (err) {
+        console.error(err.message);
+      }
+    })();
+  }, [API_URL, id]);
+  //
+  const updateParams = (key, value) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (value === "" || value === null) {
+      params.delete(key);
+    } else {
+      params.set(key, value);
+    }
+
+    setSearchParams(params);
+  };
+  //
+  const handleSizeChange = (size) => {
+    updateParams("size", size);
+  };
+
+  // Tambahkan handler untuk variant
+  const handleVariantChange = (variant) => {
+    handleInput(variant);
+    updateParams("variant", variant);
+  };
+  //
+  const navigate = useNavigate();
+  const handleBuy = () => {
+    navigate("/product/checkout-product");
+  };
 
   return (
-    <section className="mt-10 px-4 lg:mt-20 lg:px-16">
+    <section className="mt-10 px-4 lg:mt-20 lg:px-24">
       <section className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
         {/* LEFT - IMAGES */}
         <section className="flex flex-col gap-5">
           <img
-            src={detail}
+            src={detailData.images}
             alt="detail-coffe"
             className="w-full rounded-lg object-cover"
           />
@@ -50,7 +111,7 @@ export default function ProductDetail() {
             {[detail, detail, detail].map((img, i) => (
               <img
                 key={i}
-                src={img}
+                src={detailData.images}
                 alt="detail-coffe"
                 className="aspect-square w-full rounded-md object-cover"
               />
@@ -65,14 +126,16 @@ export default function ProductDetail() {
           </p>
 
           <p className="py-5 text-3xl font-medium lg:text-6xl">
-            Hazelnut Latte
+            {detailData.product_name}
           </p>
 
           <div className="flex items-center gap-3 lg:gap-4">
             <p className="text-sm text-[#D00000] line-through lg:text-base">
-              IDR 20.000
+              IDR.{detailData.price}
             </p>
-            <p className="text-brand-orange text-xl lg:text-2xl">IDR 10.000</p>
+            <p className="text-brand-orange text-xl lg:text-2xl">
+              IDR.{detailData.price - (detailData.price * 10) / 100}
+            </p>
           </div>
 
           {/* Rating */}
@@ -80,14 +143,21 @@ export default function ProductDetail() {
             {[1, 2, 3, 4, 5].map((item) => (
               <img key={item} src={Star} alt="star" className="w-4 lg:w-5" />
             ))}
-            <span className="ml-2 text-sm lg:text-base">5.0</span>
+            <span className="ml-2 text-sm lg:text-base">
+              {parseFloat(detailData.rating).toFixed(1)}
+            </span>
           </div>
 
           {/* Review */}
           <div className="flex items-center gap-3 text-sm text-gray-500 lg:text-base">
-            <span>200+ Review</span>
-            <span>|</span>
-            <span>Recommendation</span>
+            <span>{detailData.total_review} Review</span>
+
+            {detailData.total_review >= 3 && (
+              <>
+                <span>|</span>
+                <span>Recommendation</span>
+              </>
+            )}
           </div>
           <div>
             <p className="text-sm lg:text-base">
@@ -112,7 +182,10 @@ export default function ProductDetail() {
               </button>
             </div>
             <div className="mt-4">
-              <label htmlFor="size" className="text-xl font-semibold lg:text-2xl">
+              <label
+                htmlFor="size"
+                className="text-xl font-semibold lg:text-2xl"
+              >
                 Choose Size
               </label>
               <div className="mt-4 grid grid-cols-3 gap-3 text-center text-sm lg:gap-6 lg:text-base">
@@ -122,6 +195,7 @@ export default function ProductDetail() {
                     name="size"
                     value="regular"
                     className="peer sr-only appearance-none"
+                    onChange={() => handleSizeChange("regular")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Regular
@@ -134,6 +208,7 @@ export default function ProductDetail() {
                     name="size"
                     value="medium"
                     className="peer sr-only appearance-none"
+                    onChange={() => handleSizeChange("medium")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Medium
@@ -146,6 +221,7 @@ export default function ProductDetail() {
                     name="size"
                     value="large"
                     className="peer sr-only appearance-none"
+                    onChange={() => handleSizeChange("large")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Large
@@ -154,7 +230,10 @@ export default function ProductDetail() {
               </div>
             </div>
             <div className="mt-4">
-              <label htmlFor="variant" className="text-xl font-semibold lg:text-2xl">
+              <label
+                htmlFor="variant"
+                className="text-xl font-semibold lg:text-2xl"
+              >
                 Hot/Ice?
               </label>
               <div className="mt-4 grid grid-cols-2 gap-3 text-center text-sm lg:gap-6 lg:text-base">
@@ -164,7 +243,7 @@ export default function ProductDetail() {
                     name="variant"
                     value="ice"
                     className="peer sr-only appearance-none"
-                    onChange={() => handleInput("ice")}
+                    onChange={() => handleVariantChange("ice")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Ice
@@ -178,7 +257,7 @@ export default function ProductDetail() {
                     value="hot"
                     className="peer sr-only appearance-none"
                     checked={unClick === "hot"}
-                    onChange={() => handleInput("hot")}
+                    onChange={() => handleVariantChange("hot")}
                   />
                   <div className="border border-gray-400 py-3 peer-checked:border-orange-500">
                     Hot
@@ -187,7 +266,10 @@ export default function ProductDetail() {
               </div>
             </div>
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
-              <button className="bg-brand-orange rounded-md py-4 text-sm font-semibold text-white lg:text-base">
+              <button
+                onClick={handleBuy}
+                className="bg-brand-orange rounded-md py-4 text-sm font-semibold text-white hover:bg-orange-500 lg:text-base"
+              >
                 Buy
               </button>
               <button className="border-brand-orange text-brand-orange flex items-center justify-center gap-2 rounded-md border py-4 text-sm font-semibold lg:text-base">
@@ -258,7 +340,7 @@ export default function ProductDetail() {
                     <img
                       src={Chart}
                       alt="Cart"
-                      className="filter-brand-orange h-4 w-4 sm:h-6 sm:w-6 text-brand-orange"
+                      className="filter-brand-orange text-brand-orange h-4 w-4 sm:h-6 sm:w-6"
                     />
                   </button>
                 </div>

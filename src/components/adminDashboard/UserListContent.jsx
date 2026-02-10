@@ -165,7 +165,7 @@ function UserListContent() {
                       </td>
                       <td className="p-3">
                         <div className="w-10 h-10 rounded-md overflow-hidden bg-gray-200">
-                          <img src={user.photo ? `http://192.168.50.221:8080/static/img/${user.photo}` : UserIcon} alt={user.fullname} className="w-full h-full object-cover" />
+                          <img src={user.photo ? `http://192.168.50.221:8080/static/img${user.photo}` : UserIcon} alt={user.fullname} className="w-full h-full object-cover" />
                         </div>
                       </td>
                       <td className="p-3 font-medium text-black whitespace-nowrap">{user.fullname}</td>

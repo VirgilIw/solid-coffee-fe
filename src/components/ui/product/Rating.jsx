@@ -1,12 +1,37 @@
 import { useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { addReview } from "../../../redux/slices/order.slice"
 import Star from "../../../assets/home/Star.svg"
 import XCircle from "../../../assets/adminDashborad/XCircle.svg"
 
-export default function Rating({ isOpen, onClose }) {
+export default function Rating({ isOpen, onClose, orderId }) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const dispatch = useDispatch()
+  const { isLoading } = useSelector((state) => state.order)
 
   if (!isOpen) return null;
+
+  const handleSubmit = async () => {
+    if (rating === 0) {
+      alert("Please select a rating!");
+      return;
+    }
+
+    try {
+      const resultAction = await dispatch(addReview({ 
+        dt_orderid: orderId || 1,
+        rating: rating 
+      }))
+
+      if (addReview.fulfilled.match(resultAction)) {
+        onClose();
+        setRating(0);
+      }
+    } catch (err) {
+      console.error("Failed to add review:", err)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-70 flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-4 transition-opacity duration-300">
@@ -45,17 +70,13 @@ export default function Rating({ isOpen, onClose }) {
             </div>
 
             <button 
-                onClick={() => {
-                    if (rating === 0) {
-                        alert("Please select a rating!");
-                        return;
-                    }
-                    console.log(`Submitted rating: ${rating}`);
-                    onClose();
-                }}
-                className="bg-brand-orange mt-6 sm:mt-10 mb-4 sm:mb-0 shadow-brand-orange/30 group shrink-0 rounded-2xl sm:rounded-xl p-4 sm:p-3.5 shadow-lg transition-all hover:scale-[1.02] active:scale-95 text-white font-bold text-lg sm:text-base"
+                onClick={handleSubmit}
+                disabled={isLoading}
+                className={`bg-brand-orange mt-6 sm:mt-10 mb-4 sm:mb-0 shadow-brand-orange/30 group shrink-0 rounded-2xl sm:rounded-xl p-4 sm:p-3.5 shadow-lg transition-all hover:scale-[1.02] active:scale-95 text-white font-bold text-lg sm:text-base ${
+                    isLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
             >
-                Submit Review
+                {isLoading ? "Submitting..." : "Submit Review"}
             </button>
         </div>
       </div>

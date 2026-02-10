@@ -2,7 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchOrders = createAsyncThunk(
     "order/fetchOrders",
+<<<<<<< HEAD
     async ({ page = 1, noOrder = "", status = ""}, { getState, rejectWithValue }) => {
+=======
+    // async ({ page = 1, limit = 5, noOrder = "", status = "" }, { getState, rejectWithValue }) => {
+    async ({ page = 1, noOrder = "", status = "" }, { getState, rejectWithValue }) => {
+>>>>>>> master
         try {
             const params = new URLSearchParams();
             params.append("page", page);
@@ -29,6 +34,34 @@ export const fetchOrders = createAsyncThunk(
             }
 
             const data = await response.json();
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const fetchHistory = createAsyncThunk(
+    "order/fetchHistory",
+    async ({ page = 1 }, { getState, rejectWithValue }) => {
+        try {
+            const params = new URLSearchParams();
+            params.append("page", page);
+
+            const token = getState().login.user?.token || "";
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/orders/history?${params.toString()}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed Get History");
+            }
+
             return data;
         } catch (error) {
             return rejectWithValue(error.message);
@@ -92,7 +125,11 @@ export const updateOrder = createAsyncThunk(
 
 export const deleteOrder = createAsyncThunk(
     "order/deleteorder",
+<<<<<<< HEAD
     async (id, { getState,rejectWithValue }) => {
+=======
+    async (id, { getState, rejectWithValue }) => {
+>>>>>>> master
         try {
             const token = getState().login.user?.token || "";
 
@@ -115,10 +152,64 @@ export const deleteOrder = createAsyncThunk(
     }
 );
 
+export const addReview = createAsyncThunk(
+    "order/addReview",
+    async ({ order_id, rating }, { getState, rejectWithValue }) => {
+        try {
+            const token = getState().login.user?.token || "";
+
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/orders/review/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ order_id: Number(order_id), rating: Number(rating) })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed Add Review");
+            }
+
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const fetchHistoryDetail = createAsyncThunk(
+    "order/fetchHistoryDetail",
+    async (id, { getState, rejectWithValue }) => {
+        try {
+            const token = getState().login.user?.token || "";
+            const response = await fetch(`${import.meta.env.VITE_SOLID_API_URL}/orders/history/${id}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed Get Order Detail");
+            }
+
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
 const orderSlice = createSlice({
     name: "order",
     initialState: {
         items: [],
+        selectedOrder: null,
         pageInfo: {
             currentPage: 1,
             totalPage: 1,
@@ -147,7 +238,22 @@ const orderSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload;
             });
-        
+
+        builder
+            .addCase(fetchHistory.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchHistory.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.items = action.payload.data || [];
+                state.pageInfo = action.payload.pageInfo || state.pageInfo;
+            })
+            .addCase(fetchHistory.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
+
         builder
             .addCase(insertOrder.pending, (state) => {
                 state.isLoading = true;
@@ -162,7 +268,7 @@ const orderSlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload;
             });
-        
+
         builder
             .addCase(updateOrder.pending, (state) => {
                 state.isLoading = true;
@@ -189,6 +295,32 @@ const orderSlice = createSlice({
                 state.pageInfo = action.payload.pageInfo || state.pageInfo;
             })
             .addCase(deleteOrder.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+            // Add Review
+            .addCase(addReview.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(addReview.fulfilled, (state) => {
+                state.isLoading = false;
+            })
+            .addCase(addReview.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            });
+
+        builder
+            .addCase(fetchHistoryDetail.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchHistoryDetail.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.selectedOrder = action.payload.data || action.payload;
+            })
+            .addCase(fetchHistoryDetail.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
             });

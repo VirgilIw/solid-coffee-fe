@@ -5,6 +5,7 @@ import Chart from "../../assets/home/ShoppingCart.svg";
 import Search from "../../assets/home/Search.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../redux/slices/login.slice";
+import { persistedStore } from "../../redux/store";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,11 +23,12 @@ export default function Navbar() {
 
   const user = useSelector((state) => state.login.user);
   const dispatch = useDispatch();
-  // const isSuccess = useSelector((state)=> state.login.getUserStatus.user.isSuccess)
-  console.log(user);
-  const handleLogOut = () => {
-    dispatch(signOut());
-  };
+  // console.log(user);
+
+const handleLogOut = async () => {
+  dispatch(signOut());
+  await persistedStore.purge();
+};
 
   return (
     <header className="fixed top-0 left-0 z-50 w-full bg-black/50 px-4 py-4 backdrop-blur-md sm:px-6 md:px-10 lg:px-16 xl:px-24">
