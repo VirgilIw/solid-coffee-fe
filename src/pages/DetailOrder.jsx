@@ -17,6 +17,8 @@ export default function DetailOrder() {
   const { selectedOrder: order, isLoading, error } = useSelector((state) => state.order)
   const [isRatingOpen, setIsRatingOpen] = useState(false)
 
+  console.log(order)
+
   useEffect(() => {
     if (id) {
       dispatch(fetchHistoryDetail(id))
@@ -138,7 +140,7 @@ export default function DetailOrder() {
                         onClick={() => setIsRatingOpen(!isRatingOpen)}
                         className="text-white border-2 mt-2 border-brand-orange rounded-[5px] py-1.5 px-6 text-center bg-brand-orange hover:bg-transparent hover:text-brand-orange cursor-pointer transition-all font-bold text-sm">Rating</p>
                     </div>
-                    <Rating isOpen={isRatingOpen} onClose={() => setIsRatingOpen(false)} orderId={order.id || order.order_id}/>
+                    <Rating isOpen={isRatingOpen} onClose={() => setIsRatingOpen(false)} orderId={order.detail_id || order.detail_id}/>
                   </div>
                 </div>
               ))

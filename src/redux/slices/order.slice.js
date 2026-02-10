@@ -137,7 +137,7 @@ export const deleteOrder = createAsyncThunk(
 
 export const addReview = createAsyncThunk(
     "order/addReview",
-    async ({ order_id, rating }, { getState, rejectWithValue }) => {
+    async ({ dt_orderid, rating }, { getState, rejectWithValue }) => {
         try {
             const token = getState().login.user?.token || "";
 
@@ -147,7 +147,7 @@ export const addReview = createAsyncThunk(
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({ order_id: Number(order_id), rating: Number(rating) })
+                body: JSON.stringify({ dt_orderid: Number(dt_orderid), rating: Number(rating) })
             });
 
             const data = await response.json();
