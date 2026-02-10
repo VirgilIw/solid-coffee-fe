@@ -1,21 +1,8 @@
-<<<<<<< HEAD
-import { useState } from "react"
-import ChatWindow from "../components/ui/ChatWindow"
-import Calendar from "../assets/Order/Calendar.svg"
-import Calendar2 from "../assets/Order/Calendar2.svg"
-import Glass from "../assets/Order/glass-tea.svg"
-import Repeat from "../assets/Order/Repeat.svg"
-import Process from "../assets/Order/process.svg"
-import Message from "../assets/Order/Message.svg"
-import ArrowRight from "../assets/home/arrow-right.png"
-import FoodImage1 from "../assets/home/Food-1.png"
-=======
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHistory, setPage } from "../redux/slices/order.slice";
 import ChatWindow from "../components/ui/ChatWindow";
->>>>>>> master
 
 import Calendar from "../assets/Order/Calendar.svg";
 import Calendar2 from "../assets/Order/Calendar2.svg";
@@ -26,13 +13,9 @@ import Message from "../assets/Order/Message.svg";
 import ArrowRight from "../assets/home/arrow-right.png";
 
 export default function HistoryOrder() {
-<<<<<<< HEAD
-    const [isChatOpen, setIsChatOpen] = useState(false)
-=======
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isChatOpen, setIsChatOpen] = useState(false);
->>>>>>> master
 
     const { items: orders, isLoading, pageInfo } = useSelector((state) => state.order);
 
@@ -40,35 +23,6 @@ export default function HistoryOrder() {
         dispatch(fetchHistory({ page: pageInfo.currentPage }));
     }, [dispatch, pageInfo.currentPage]);
 
-<<<<<<< HEAD
-                <div className="space-y-6">
-                    {orders.map((order, index) => (
-                        <div key={index} className="flex flex-col md:flex-row gap-5 bg-[#E8E8E84D] p-5 rounded-md items-start md:items-center">
-                            <div className="shrink-0 hidden md:block">
-                                <img src={order.image} alt="Food" className="w-24 h-24 object-cover"/>
-                            </div>
-                            
-                            <div className="grow grid grid-cols-2 sm:grid-cols-4 gap-4 w-full min-w-0">
-                                <div className="flex flex-col">
-                                    <p className="flex gap-2 text-[#4F5665] text-sm"><img src={Glass} alt="Icon" className="w-4 h-4" /> No. Order</p>
-                                    <p className="font-bold mt-1 text-base">{order.id}</p>
-                                    <button className="text-brand-orange hover:text-[#ffad4e] text-sm font-medium underline text-left mt-1 hidden md:block">View Order Detail</button>
-                                </div>
-                                <div className="flex flex-col">
-                                    <p className="flex gap-2 text-[#4F5665] text-sm"><img src={Calendar2} alt="Icon" className="w-4 h-4" /> Date</p>
-                                    <p className="font-bold mt-1 text-base">{order.date}</p>
-                                </div>
-                                <div className="flex flex-col">
-                                    <p className="flex gap-2 text-[#4F5665] text-sm"><img src={Repeat} alt="Icon" className="w-4 h-4" /> Total</p>
-                                    <p className="font-bold mt-1 text-base">{order.total}</p>
-                                </div>
-                                <div className="flex flex-col">
-                                    <p className="flex gap-2 text-[#4F5665] text-sm"><img src={Process} alt="Icon" className="w-4 h-4" /> Status</p>
-                                    <p className="font-semibold mt-1 bg-[#FF890633] text-brand-orange py-1 px-3 rounded-full text-xs w-fit">{order.status}</p>
-                                </div>
-                            </div>
-                            <button className="text-brand-orange text-sm font-medium hover:underline text-left mt-1 block md:hidden">View Order Detail</button>
-=======
     const handlePageChange = (page) => {
         dispatch(setPage(page));
     };
@@ -94,7 +48,6 @@ export default function HistoryOrder() {
                             <button className='bg-white text-[#3E3E3E] px-4 sm:px-6 py-2 font-bold shadow-sm rounded-md text-sm sm:text-base grow sm:grow-0'>On Progress</button>
                             <button className='text-[#9F9F9F] px-4 sm:px-6 py-2 font-medium hover:text-[#3E3E3E] transition text-sm sm:text-base grow sm:grow-0'>Sending Goods</button>
                             <button className='text-[#9F9F9F] px-4 sm:px-6 py-2 font-medium hover:text-[#3E3E3E] transition text-sm sm:text-base grow sm:grow-0'>Finish Order</button>
->>>>>>> master
                         </div>
                         <div className='bg-[#E8E8E899] p-2 px-4 flex gap-3 items-center rounded-lg cursor-pointer w-fit'>
                             <img src={Calendar} alt="Calendar Icon" className="w-4 h-4 opacity-60" />
