@@ -16,6 +16,7 @@ import { ForgotPassword } from "./pages/ForgotPassword";
 
 import AdminUserlist from "./pages/AdminUserlist";
 import AdminProductList from "./pages/AdminProductList";
+import AdminMenuList from "./pages/AdminMenuList";
 import AdminOrderList from "./pages/AdminOrderList";
 
 import PrivateRoute from "./components/routes/PrivateRoute";
@@ -38,10 +39,11 @@ export default function Router() {
       <Route element={<AdminRoute />}>
         <Route path="dashboard" element={<DashboardLayout />}>
           <Route path="admin">
-            <Route index element={<Admin />} />
-            <Route path="product-list" element={<AdminProductList />} />
-            <Route path="order-list" element={<AdminOrderList />} />
-            <Route path="users-list" element={<AdminUserlist />} />
+            <Route index element={<Admin/>} />
+            <Route path="product-list" element={<AdminProductList/>} />
+            <Route path="menu-list" element={<AdminMenuList/>} />
+            <Route path="order-list" element={<AdminOrderList/>} />
+            <Route path="users-list" element={<AdminUserlist/>} />
           </Route>
         </Route>
       </Route>

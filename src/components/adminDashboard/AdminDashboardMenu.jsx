@@ -6,6 +6,7 @@ import ProductIcon from "../../assets/adminDashborad/ProductIcon.svg";
 import OrderIcon from "../../assets/adminDashborad/Bag.svg";
 import UserIcon from "../../assets/adminDashborad/UserIcon.svg";
 import LogoutIcon from "../../assets/adminDashborad/LogoutIcon.svg";
+import Menu from "../../assets/adminDashborad/utensils-crossed.svg"
 import { Link } from "react-router";
 
 function AdminDashboardMenu() {
@@ -21,14 +22,15 @@ function AdminDashboardMenu() {
   const menu = [
     { id: 1, name: "Dashboard", icon: DashboardIcon, path: "/dashboard/admin" },
     { id: 2, name: "Product", icon: ProductIcon, path: "/dashboard/admin/product-list" },
-    { id: 3, name: "Order", icon: OrderIcon, path: "/dashboard/admin/order-list" },
+    { id: 3, name: "Menu", icon: Menu, path: "/dashboard/admin/menu-list" },
+    { id: 4, name: "Order", icon: OrderIcon, path: "/dashboard/admin/order-list" },
     {
-      id: 4,
+      id: 5,
       name: "User",
       icon: UserIcon,
       path: "/dashboard/admin/users-list",
     },
-    { id: 5, name: "Keluar", icon: LogoutIcon, path: "/login" },
+    { id: 6, name: "Keluar", icon: LogoutIcon, path: "/login" },
   ];
   return (
     <div className="hidden h-screen border-r-2 border-[#E8E8E8] md:block md:p-5">

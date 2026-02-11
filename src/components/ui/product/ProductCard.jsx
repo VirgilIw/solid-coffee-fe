@@ -16,7 +16,15 @@ export default function ProductCard({ product, index }) {
           </div>
         )}
         <img
-          src={product.image_products ? `http://192.168.50.221:8080/static/img/products/${product.image_products}` : FoodImage1}
+          src={
+            product.image_products 
+              ? `http://192.168.50.221:8080/static/img/products/${
+                  Array.isArray(product.image_products) 
+                    ? product.image_products[0] 
+                    : (typeof product.image_products === 'string' ? product.image_products.split(',')[0] : product.image_products)
+                }` 
+              : FoodImage1
+          }
           alt={product.name}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />

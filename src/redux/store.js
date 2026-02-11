@@ -15,6 +15,7 @@ import profileReducer from "../redux/slices/profile.slice";
 import userReducer from "../redux/slices/user.slice";
 import loginReducer from "../redux/slices/login.slice";
 import orderReducer from "../redux/slices/order.slice";
+import menuReducer from "../redux/slices/menu.slice";
 
 const persistConfig = {
   key: "data",
@@ -28,6 +29,7 @@ const persistedReducer = persistCombineReducers(persistConfig, {
   user: userReducer,
   login: loginReducer,
   order: orderReducer,
+  menu: menuReducer,
 });
 
 const store = configureStore({

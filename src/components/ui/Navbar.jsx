@@ -23,7 +23,6 @@ export default function Navbar() {
 
   const user = useSelector((state) => state.login.user);
   const dispatch = useDispatch();
-  // console.log(user);
 
 const handleLogOut = async () => {
   dispatch(signOut());

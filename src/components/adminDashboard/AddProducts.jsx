@@ -4,8 +4,13 @@ import Xicon from "../../assets/adminDashborad/XCircle.svg";
 import Image from "../../assets/adminDashborad/Image.svg";
 import { useDispatch } from "react-redux";
 import { insertProduct } from "../../redux/slices/product.slice";
+import Modal from "../modal/Modal";
 
 function AddProducts({ isAddbarOpen, toggleAddbar }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   const dispatch = useDispatch();
   const [newProduct, setNewProduct] = useState({
     product_name: "",
@@ -36,32 +41,28 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(newProduct.images_file);
 
     const formData = new FormData();
     formData.append("product_name", newProduct.product_name);
     formData.append("price", newProduct.price);
     formData.append("description", newProduct.description);
-    newProduct.images_file.map((file) => (
-      formData.append("images_file", file)
-    ))
+    newProduct.images_file.map((file) => formData.append("images_file", file));
     try {
       dispatch(insertProduct(formData));
+
+      setNewProduct({
+        product_name: "",
+        price: "",
+        description: "",
+        stock: "",
+        images_file: [],
+        photoPreview: [],
+      });
+      toggleAddbar();
+      openModal();
     } catch {
       return;
     }
-
-    console.log("New Product:", newProduct);
-
-    setNewProduct({
-      product_name: "",
-      price: "",
-      description: "",
-      stock: "",
-      images_file: [],
-      photoPreview: [],
-    });
-    toggleAddbar();
   };
 
   useEffect(() => {
@@ -203,6 +204,7 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
               </div>
               <div>
                 <button
+                  // onClick={openModal}
                   type="submit"
                   className="bg-brand-orange w-full rounded-lg p-2 font-medium text-black shadow-sm transition-colors hover:brightness-75"
                 >
@@ -213,6 +215,20 @@ function AddProducts({ isAddbarOpen, toggleAddbar }) {
           </form>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <div className="flex h-fit w-fit">
+          <p>Test</p>
+        </div>
+        <div className="flex w-full items-center justify-center">
+          <button
+            onClick={closeModal}
+            type="submit"
+            className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 font-semibold text-gray-700 transition-colors duration-200 ease-in-out select-none peer-checked:bg-blue-600 peer-checked:text-white hover:bg-gray-100 peer-checked:hover:bg-blue-700"
+          >
+            Ok
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

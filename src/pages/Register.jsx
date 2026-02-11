@@ -95,7 +95,6 @@ export default function Register() {
         throw new Error(data.message || "Register failed");
       }
 
-      console.log("REGISTER SUCCESS:", data);
       setSuccessMsg("Register success: ", data);
 
       dispatch(
