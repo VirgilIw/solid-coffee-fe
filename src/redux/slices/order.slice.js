@@ -2,28 +2,17 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchOrders = createAsyncThunk(
     "order/fetchOrders",
-    // async ({ page = 1, limit = 5, noOrder = "", status = "" }, { getState, rejectWithValue }) => {
-    async ({ page = 1, noOrder = "", status = "" }, { getState, rejectWithValue }) => {
+    async (params, { getState, rejectWithValue }) => {
         try {
-            const params = new URLSearchParams();
-            params.append("page", page);
-
-            if (noOrder) {
-                params.append("No.Order", noOrder);
-            }
-            if (status) {
-                params.append("status", status.toLowerCase());
-            }
 
             const token = getState().login.user?.token || "";
-            const response = await fetch(`http://192.168.50.221:8080/admin/orders/?${params.toString()}`, {
+            const pageNum = typeof params === 'object' ? params.page : (params || 1);
+            const response = await fetch(`http://192.168.50.221:8080/admin/orders/${pageNum ? `?page=${pageNum}` : ""}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`
                 },
             });
-
-            console.log(params.toString())
 
             if (!response.ok) {
                 throw new Error("Failed Get Data Order");

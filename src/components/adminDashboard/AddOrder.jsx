@@ -25,7 +25,6 @@ function AddOrder({
   const handleAddOrderSubmit = (e) => {
     e.preventDefault();
 
-    console.log("New Order:", newOrder);
     handleCloseSidebar();
   };
 

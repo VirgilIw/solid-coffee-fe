@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 export const loginThunk = createAsyncThunk(
   "auth/login",
   async (payload, { rejectWithValue }) => {
-    // console.log(payload);
+    
     try {
       const API_URL = import.meta.env.VITE_SOLID_API_URL;
 
@@ -17,7 +17,7 @@ export const loginThunk = createAsyncThunk(
       });
 
       const data = await res.json();
-      // console.log(data);
+     
       if (!res.ok) {
         throw new Error(data.message);
       }
@@ -25,7 +25,7 @@ export const loginThunk = createAsyncThunk(
       const token = data.data.token;
 
       const decodedUser = jwtDecode(token);
-      // console.log(decodedUser);
+      
       return {
         email: payload.email,
         token,
@@ -76,7 +76,7 @@ const loginSlice = createSlice({
           token: action.payload.token,
            ...action.payload.user,
         };
-        // console.log("PAYLOAD LOGIN:", action.payload);
+        
       },
       rejected: (prevState, { payload }) => {
         prevState.getUserStatus.user.isLoading = false;

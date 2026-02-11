@@ -20,7 +20,6 @@ function EditOrder({
   formatPrice,
 }) {
   const handleStatusUpdate = (newStatus) => {
-    console.log(`Update status to: ${newStatus}`);
     handleCloseSidebar();
   };
 

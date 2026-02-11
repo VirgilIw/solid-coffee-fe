@@ -17,8 +17,6 @@ export default function DetailOrder() {
   const { selectedOrder: order, isLoading, error } = useSelector((state) => state.order)
   const [isRatingOpen, setIsRatingOpen] = useState(false)
 
-  console.log(order)
-
   useEffect(() => {
     if (id) {
       dispatch(fetchHistoryDetail(id))

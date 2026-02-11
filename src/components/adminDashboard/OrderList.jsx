@@ -265,21 +265,25 @@ function OrderList() {
   const {
     items: orders,
     isLoading,
-    pageInfo,
+    error,
   } = useSelector((state) => state.order);
-  const [searchParams, setSearchParams] = useSearchParams();
-  //const [search, setSearch] = useState(searchParams.get("search") || "");
+  // const [searchParams, setSearchParams] = useSearchParams();
+  // //const [search, setSearch] = useState(searchParams.get("search") || "");
 
-  //const [searchTerm, setSearchTerm] = useState("");
+  // //const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    const filters = {
-      page: Number(searchParams.get("page")) || pageInfo.currentPage,
-      //limit: 5,
-      //search: searchParams.get("title") || "",
-    };
-    dispatch(fetchOrders(filters));
-  }, [dispatch, pageInfo.currentPage, searchParams]);
+  // useEffect(() => {
+  //   const filters = {
+  //     page: Number(searchParams.get("page")) || pageInfo.currentPage,
+  //     //limit: 5,
+  //     //search: searchParams.get("title") || "",
+  //   };
+  //   dispatch(fetchOrders(filters));
+  // }, [dispatch, pageInfo.currentPage, searchParams]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState("");
 
   const updateUrlQueryParam = (key, value) => {
     const url = new URL(window.location.href);
@@ -298,16 +302,12 @@ function OrderList() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "completed":
+      case "done":
         return "bg-[#00A70033] text-[#00A700]";
-      case "pending":
-        return "bg-[#D0000033] text-[#D00000]";
       case "cancelled":
         return "bg-[#D0000033] text-[#D00000]";
-      case "on Progress":
+      case "pending":
         return "bg-[#FF890633] text-[#FF8906]";
-      case "waiting":
-        return "bg-[#4F566533] text-[#4F5665]";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -315,15 +315,11 @@ function OrderList() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "completed":
+      case "done":
         return <CheckCircle size={16} />;
       case "pending":
         return <Clock size={16} />;
       case "cancelled":
-        return <Clock size={16} />;
-      case "on Progress":
-        return <AlertCircle size={16} />;
-      case "waiting":
         return <AlertCircle size={16} />;
       default:
         return null;
@@ -390,24 +386,32 @@ function OrderList() {
   };
 
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(orders.length / itemsPerPage);
-
-  const paginatedOrders = orders.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
-
   const handlePageChange = (page) => {
-    setCurrentPage(page);
-    updateUrlQueryParam("page", "");
-    updateUrlQueryParam("page", page);
-  };
+      if (page > 0) {
+        setCurrentPage(page);
+        updateUrlQueryParam("page", page);
+      }
+    };
+  
+    useEffect(() => {
+      dispatch(fetchOrders({ page: currentPage }));
+    }, [dispatch, currentPage, searchTerm]);
+  
+    const handleFilter = (e) => {
+      e.preventDefault();
+      setSearchTerm(searchInput);
+      setCurrentPage(1);
+      updateUrlQueryParam("search", searchInput);
+      updateUrlQueryParam("page", 1);
+    };
+  
+    const handleSearchChange = (e) => {
+      setSearchInput(e.target.value);
+    };
+  
 
   const isSidebarOpen = activeSidebar !== null;
 
-  console.log(filter)
   return (
     <div>
       {/* Order Edit Sidebar */}
@@ -558,7 +562,35 @@ function OrderList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {paginatedOrders.map((order, index) => (
+                {isLoading ? (
+                    <tr>
+                      <td colSpan="7" className="p-10 text-center font-medium">
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : error ? (
+                    <tr>
+                      <td
+                        colSpan="7"
+                        className="p-10 text-center font-medium text-red-500"
+                      >
+                        {error}
+                      </td>
+                    </tr>
+                  ) : !Array.isArray(orders) ? (
+                    <tr>
+                      <td colSpan="7" className="p-10 text-center font-medium">
+                        Format data tidak valid.
+                      </td>
+                    </tr>
+                  ) : orders.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="p-10 text-center font-medium">
+                        No orders found.
+                      </td>
+                    </tr>
+                  ) : (
+                    orders.map((order, index) => (
                   <tr
                     key={order.id}
                     className={` ${index % 2 === 0 ? "bg-white" : "bg-gray-50"} cursor-pointer transition-colors hover:bg-gray-100`}
@@ -635,7 +667,8 @@ function OrderList() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                ))
+              )}
               </tbody>
             </table>
           </div>
@@ -646,46 +679,47 @@ function OrderList() {
               {/* Info jumlah order */}
               <div className="text-sm text-gray-700">
                 Showing{" "}
-                <span className="font-semibold">{paginatedOrders.length}</span>{" "}
+                <span className="font-semibold">{orders.length}</span>{" "}
                 order of <span className="font-semibold">100</span> order
               </div>
 
-              {/* Pagination Controls */}
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Prev
-                </button>
-
-                {/* Page Numbers */}
-                <div className="flex items-center space-x-1">
-                  {Array.from({ length: Math.min(9, totalPages) }, (_, i) => {
-                    const page = i + 1;
-                    return (
-                      <button
-                        key={page}
-                        onClick={() => handlePageChange(page)}
-                        className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-                          page === currentPage
-                            ? "bg-brand-orange text-white"
-                            : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-                        }`}
+              {/* Pagination */}
+                <div className="flex items-center justify-between border-t border-[#E8E8E8] p-6 text-sm text-[#4F5665]">
+                  
+                  <div className="flex items-center gap-6">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="cursor-pointer font-medium transition-colors hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Prev
+                    </button>
+                    <div className="flex items-center gap-4 font-medium">
+                      {/* Dynamic page numbers could be improved if total pages are known */}
+                      <span className="text-brand-orange text-lg font-bold">
+                        {currentPage}
+                      </span>
+                      <span
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        className="cursor-pointer transition-colors hover:text-black"
                       >
-                        {page}
-                      </button>
-                    );
-                  })}
+                        {currentPage + 1}
+                      </span>
+                      <span
+                        onClick={() => handlePageChange(currentPage + 2)}
+                        className="cursor-pointer transition-colors hover:text-black"
+                      >
+                        {currentPage + 2}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      className="cursor-pointer font-medium transition-colors hover:text-black"
+                    >
+                      Next
+                    </button>
+                  </div>
                 </div>
-
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Next
-                </button>
-              </div>
             </div>
           </div>
         </div>

@@ -61,7 +61,6 @@ export default function ProductDetail() {
         }
 
         const data = await res.json();
-        console.log("test:", data);
         setDetailData(data.data);
       } catch (err) {
         console.error(err.message);

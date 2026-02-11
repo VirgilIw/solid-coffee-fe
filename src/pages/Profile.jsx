@@ -136,7 +136,7 @@ export default function Profile() {
         }
 
         const data = await res.json();
-        console.log(data);
+       
         // mapping data dari backend ke state
         setFormData((prev) => ({
           ...prev,

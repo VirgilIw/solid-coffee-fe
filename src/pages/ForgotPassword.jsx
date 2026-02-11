@@ -11,7 +11,6 @@ export const ForgotPassword = () => {
     e.preventDefault();
 
     try {
-      console.log("API_URL:", API_URL);
       const res = await fetch(`${API_URL}/auth/forgot-password`, {
         method: "POST",
         headers: {
@@ -23,8 +22,7 @@ export const ForgotPassword = () => {
       });
 
       const data = await res.json();
-      console.log(data);
-      console.log(forgotPassword);
+      return data
     } catch (error) {
       console.log(error.message);
     }
