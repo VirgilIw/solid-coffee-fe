@@ -3,37 +3,18 @@ import { Plus, Search } from "lucide-react";
 import FilterIcon from "../../assets/adminDashborad/FilterIcon.svg";
 import Delete from "../../assets/adminDashborad/deleteIcon.svg";
 import Edit from "../../assets/adminDashborad/editIcon.svg";
-import AddProducts from "./AddProducts";
 import EditProduct from "./EditProduct";
 import { useDispatch, useSelector } from "react-redux";
-//import { useSearchParams } from "react-router";
 import { fetchMenu } from "../../redux/slices/menu.slice";
 import AddMenu from "./AddMenu";
 
 function MenuList() {
   const dispatch = useDispatch();
-  const {items: menu,isLoading,error,} = useSelector((state) => state.menu);
-  //const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const { items: menu, isLoading, error } = useSelector((state) => state.menu);
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    const filters = {
-      page: Number(searchParams.get("page")) || pageInfo.currentPage,
-      limit: 5,
-      search: searchParams.get("title") || "",
-    };
-    const response = dispatch(fetchMenu(filters));
-    console.log(response)
-  }, [dispatch, searchParams]);
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    setSearchParams(e.target.value);
-    updateUrlQueryParam("title", "");
-    updateUrlQueryParam("title", e.target.value);
-  };
+  const [searchInput, setSearchInput] = useState("");
 
   const handleSubmitSearch = (event) => {
     event.preventDefault();
@@ -61,23 +42,27 @@ function MenuList() {
     setIsEditbarOpen(!isEditbarOpen);
   };
 
-  const formatPrice = (price) => {
-    return `IDR ${price.toLocaleString("id-ID")}`;
+  const handlePageChange = (page) => {
+    if (page > 0) {
+      setCurrentPage(page);
+      updateUrlQueryParam("page", page);
+    }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(menu.length / itemsPerPage);
+  useEffect(() => {
+    dispatch(fetchMenu({ page: currentPage }));
+  }, [dispatch, currentPage, searchTerm]);
 
-  const paginatedProducts = menu.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
+  const handleFilter = (e) => {
+    e.preventDefault();
+    setSearchTerm(searchInput);
+    setCurrentPage(1);
+    updateUrlQueryParam("search", searchInput);
+    updateUrlQueryParam("page", 1);
+  };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    updateUrlQueryParam("page", "");
-    updateUrlQueryParam("page", page);
+  const handleSearchChange = (e) => {
+    setSearchInput(e.target.value);
   };
 
   const [selectProduct, setSelectProduct] = useState(null);
@@ -87,6 +72,7 @@ function MenuList() {
     setIsEditbarOpen(true);
   };
 
+  console.log(isLoading);
   let no = 1;
 
   return (
@@ -202,70 +188,99 @@ function MenuList() {
                   </tr>
                 </thead>
                 <tbody className="w-full divide-y divide-gray-200">
-                  { paginatedProducts.map((menu, index) => (
-                    <tr
-                      key={menu.id}
-                      className={` ${index % 2 === 0 ? "bg-white" : "bg-gray-50"} transition-colors hover:bg-gray-100`}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          <p>{no++}</p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          <p>{menu.id}</p>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          <p>{menu.discount}</p>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {menu.product_name}
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {menu.stock}
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div
-                          className="flex max-w-xs items-center justify-center gap-2 truncate text-sm text-gray-700"
-                          title="menu-action"
-                        >
-                          <div className="h-5 w-5">
-                            <button
-                              key={menu.id}
-                              onClick={() => handleOpenAndSelect(menu)}
-                              className="h-full w-full"
-                            >
-                              <img
-                                src={Edit}
-                                alt="edit-action-icon"
-                                className="h-full w-full"
-                              />
-                            </button>
-                          </div>
-                          <div className="h-5 w-5">
-                            <button className="h-full w-full">
-                              <img
-                                src={Delete}
-                                alt="delete-action-icon"
-                                className="h-full w-full"
-                              />
-                            </button>
-                          </div>
-                        </div>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan="7" className="p-10 text-center font-medium">
+                        Loading...
                       </td>
                     </tr>
-                  ))}
+                  ) : error ? (
+                    <tr>
+                      <td
+                        colSpan="7"
+                        className="p-10 text-center font-medium text-red-500"
+                      >
+                        {error}
+                      </td>
+                    </tr>
+                  ) : !Array.isArray(menu) ? (
+                    <tr>
+                      <td colSpan="7" className="p-10 text-center font-medium">
+                        Format data tidak valid.
+                      </td>
+                    </tr>
+                  ) : menu.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="p-10 text-center font-medium">
+                        No menu found.
+                      </td>
+                    </tr>
+                  ) : (
+                    menu.map((menu, index) => (
+                      <tr
+                        key={menu.id}
+                        className={` ${index % 2 === 0 ? "bg-white" : "bg-gray-50"} transition-colors hover:bg-gray-100`}
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            <p>{no++}</p>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            <p>{menu.id}</p>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            <p>{parseFloat(menu.discount)}</p>
+                          </div>
+                        </td>
+
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {menu.product_name}
+                          </div>
+                        </td>
+
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-medium text-gray-900">
+                            {menu.stock}
+                          </div>
+                        </td>
+
+                        <td className="px-6 py-4">
+                          <div
+                            className="flex max-w-xs items-center justify-center gap-2 truncate text-sm text-gray-700"
+                            title="menu-action"
+                          >
+                            <div className="h-5 w-5">
+                              <button
+                                key={menu.id}
+                                onClick={() => handleOpenAndSelect(menu)}
+                                className="h-full w-full"
+                              >
+                                <img
+                                  src={Edit}
+                                  alt="edit-action-icon"
+                                  className="h-full w-full"
+                                />
+                              </button>
+                            </div>
+                            <div className="h-5 w-5">
+                              <button className="h-full w-full">
+                                <img
+                                  src={Delete}
+                                  alt="delete-action-icon"
+                                  className="h-full w-full"
+                                />
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -273,47 +288,46 @@ function MenuList() {
             <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
               <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
                 <div className="text-sm text-gray-700">
-                  Showing{" "}
-                  <span className="font-semibold">
-                    {paginatedProducts.length}
-                  </span>{" "}
+                  Showing <span className="font-semibold">{menu.length}</span>{" "}
                   menu of <span className="font-semibold">100</span> menu
                 </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
-                  >
-                    Prev
-                  </button>
-
-                  <div className="flex items-center space-x-1">
-                    {Array.from({ length: Math.min(9, totalPages) }, (_, i) => {
-                      const page = i + 1;
-                      return (
-                        <button
-                          key={page}
-                          onClick={() => handlePageChange(page)}
-                          className={`rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium ${
-                            page === currentPage
-                              ? "text-brand-orange"
-                              : "text-black"
-                          }`}
-                        >
-                          {page}
-                        </button>
-                      );
-                    })}
+                
+                {/* Pagination */}
+                <div className="flex items-center justify-between border-t border-[#E8E8E8] p-6 text-sm text-[#4F5665]">
+                  
+                  <div className="flex items-center gap-6">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="cursor-pointer font-medium transition-colors hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Prev
+                    </button>
+                    <div className="flex items-center gap-4 font-medium">
+                      {/* Dynamic page numbers could be improved if total pages are known */}
+                      <span className="text-brand-orange text-lg font-bold">
+                        {currentPage}
+                      </span>
+                      <span
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        className="cursor-pointer transition-colors hover:text-black"
+                      >
+                        {currentPage + 1}
+                      </span>
+                      <span
+                        onClick={() => handlePageChange(currentPage + 2)}
+                        className="cursor-pointer transition-colors hover:text-black"
+                      >
+                        {currentPage + 2}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      className="cursor-pointer font-medium transition-colors hover:text-black"
+                    >
+                      Next
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
-                  >
-                    Next
-                  </button>
                 </div>
               </div>
             </div>

@@ -10,134 +10,30 @@ import { useSearchParams } from "react-router";
 import { fetchProducts } from "../../redux/slices/product.slice";
 
 function ProductList() {
-  // const products = [
-  //   {
-  //     id: 1,
-  //     name: "Caramel Machiato",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Hazelnut Latte",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Kopi Susu",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1534778101976-62847782c213?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Espresso Supreme",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Caramel Velvet Latte",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1587734195503-904137cec4a6?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "Caramel Machiato II",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  //   {
-  //     id: 7,
-  //     name: "Hazelnut Latte II",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  //   {
-  //     id: 8,
-  //     name: "Kopi Susu II",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1534778101976-62847782c213?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  //   {
-  //     id: 9,
-  //     name: "Espresso Supreme II",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  //   {
-  //     id: 10,
-  //     name: "Caramel Velvet Latte II",
-  //     price: 40000,
-  //     description:
-  //       "Cold brewing is a method of brewing that combines coarse coffee grounds with room temperature water...",
-  //     image:
-  //       "https://images.unsplash.com/photo-1587734195503-904137cec4a6?w=100&h=100&fit=crop&crop=center",
-  //     stock: 200,
-  //   },
-  // ];
-
   const dispatch = useDispatch();
   const {
     items: products,
-    pageInfo,
+    isLoading,
+    error,
   } = useSelector((state) => state.product);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState(searchParams.get("title") || "");
 
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState("");
 
-  useEffect(() => {
-    const filters = {
-      page: Number(searchParams.get("page")) || pageInfo.currentPage,
-      limit: 5,
-      search: searchParams.get("title") || "",
-    };
-    dispatch(fetchProducts(filters));
-  }, [dispatch, pageInfo.currentPage, searchParams]);
+  // useEffect(() => {
+  //   const filters = {
+  //     page: Number(searchParams.get("page")) || pageInfo.currentPage,
+  //     limit: 5,
+  //     search: searchParams.get("title") || "",
+  //   };
+  //   dispatch(fetchProducts(filters));
+  // }, [dispatch, pageInfo.currentPage, searchParams]);
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-    setSearchParams(e.target.value);
-    // updateUrlQueryParam("title", "");
-    // updateUrlQueryParam("title", e.target.value);
-  };
+  // const handleSearchChange = (e) => {
+  //   setSearchTerm(e.target.value);
+  //   setSearchParams(e.target.value);
+  // };
 
   const handleSubmitSearch = (event) => {
     event.preventDefault();
@@ -169,19 +65,27 @@ function ProductList() {
     return `IDR ${price.toLocaleString("id-ID")}`;
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-
-  const paginatedProducts = products.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
-
   const handlePageChange = (page) => {
-    setCurrentPage(page);
-    // updateUrlQueryParam("page", "");
-    // updateUrlQueryParam("page", page);
+    if (page > 0) {
+      setCurrentPage(page);
+      updateUrlQueryParam("page", page);
+    }
+  };
+
+  useEffect(() => {
+    dispatch(fetchProducts({ page: currentPage }));
+  }, [dispatch, currentPage, searchTerm]);
+
+  const handleFilter = (e) => {
+    e.preventDefault();
+    setSearchTerm(searchInput);
+    setCurrentPage(1);
+    updateUrlQueryParam("search", searchInput);
+    updateUrlQueryParam("page", 1);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchInput(e.target.value);
   };
 
   const [selectProduct, setSelectProduct] = useState(null);
@@ -190,6 +94,8 @@ function ProductList() {
     setSelectProduct(product);
     setIsEditbarOpen(true);
   };
+
+  console.log(products);
 
   return (
     <div>
@@ -304,97 +210,133 @@ function ProductList() {
                   </tr>
                 </thead>
                 <tbody className="w-full divide-y divide-gray-200">
-                  {paginatedProducts.map((product, index) => (
-                    <tr
-                      key={product.id}
-                      className={` ${index % 2 === 0 ? "bg-white" : "bg-gray-50"} transition-colors hover:bg-gray-100`}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                            <img
-                              src={
-                                product.image_products
-                                  ? `http://192.168.50.221:8080/static/img/products/${
-                                      Array.isArray(product.image_products) 
-                                        ? product.image_products[0] 
-                                        : (typeof product.image_products === 'string' ? product.image_products.split(',')[0] : product.image_products)
-                                    }`
-                                  : ""
-                              }
-                              alt={product.name}
-                              className="h-full w-full object-cover object-center"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src =
-                                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNGM0Y0RjYiLz48cGF0aCBkPSJNNjIgNDJDMjIgNzIgNTAgOTAgNTAgOTBMNzIgNzJMODQgNjJMNjIgNDJaIiBmaWxsPSIjRDhEOURBIi8+PHBhdGggZD0iTTUwIDUwQzU1LjUyMyA1MCA2MCA0NS41MjMgNjAgNDBDNjAgMzQuNDc3IDU1LjUyMyAzMCA1MCAzMEM0NC40NzcgMzAgNDAgMzQuNDc3IDQwIDQwQzQwIDQ1LjUjMyA0NC40NzcgNTAgNTAgNTBaIiBmaWxsPSIjRDhEOURBIi8+PC9zdmc+";
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {product.name}
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-semibold text-gray-900">
-                          {formatPrice(product.price)}
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div
-                          className="max-w-xs truncate text-sm text-gray-700"
-                          title={product.description}
-                        >
-                          {product.description}
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div
-                          className="max-w-xs truncate text-sm text-gray-700"
-                          title={product.stock}
-                        >
-                          {product.stock}
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <div
-                          className="flex max-w-xs items-center justify-center gap-2 truncate text-sm text-gray-700"
-                          title="product-action"
-                        >
-                          <div className="h-5 w-5">
-                            <button
-                              key={product.id}
-                              onClick={() => handleOpenAndSelect(product)}
-                              className="h-full w-full"
-                            >
-                              <img
-                                src={Edit}
-                                alt="edit-action-icon"
-                                className="h-full w-full"
-                              />
-                            </button>
-                          </div>
-                          <div className="h-5 w-5">
-                            <button className="h-full w-full">
-                              <img
-                                src={Delete}
-                                alt="delete-action-icon"
-                                className="h-full w-full"
-                              />
-                            </button>
-                          </div>
-                        </div>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan="7" className="p-10 text-center font-medium">
+                        Loading...
                       </td>
                     </tr>
-                  ))}
+                  ) : error ? (
+                    <tr>
+                      <td
+                        colSpan="7"
+                        className="p-10 text-center font-medium text-red-500"
+                      >
+                        {error}
+                      </td>
+                    </tr>
+                  ) : !Array.isArray(products) ? (
+                    <tr>
+                      <td colSpan="7" className="p-10 text-center font-medium">
+                        Format data tidak valid.
+                      </td>
+                    </tr>
+                  ) : products.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="p-10 text-center font-medium">
+                        No products found.
+                      </td>
+                    </tr>
+                  ) : (
+                    products
+                      .filter((product) => product !== null)
+                      .map((product, index) => (
+                        <tr
+                          key={product.id}
+                          className={` ${index % 2 === 0 ? "bg-white" : "bg-gray-50"} transition-colors hover:bg-gray-100`}
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                <img
+                                  src={
+                                    product.image_products
+                                      ? `http://192.168.50.221:8080/static/img/products/${
+                                          Array.isArray(product.image_products)
+                                            ? product.image_products[0]
+                                            : typeof product.image_products ===
+                                                "string"
+                                              ? product.image_products.split(
+                                                  ",",
+                                                )[0]
+                                              : product.image_products
+                                        }`
+                                      : ""
+                                  }
+                                  alt={product.name}
+                                  className="h-full w-full object-cover object-center"
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src =
+                                      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNGM0Y0RjYiLz48cGF0aCBkPSJNNjIgNDJDMjIgNzIgNTAgOTAgNTAgOTBMNzIgNzJMODQgNjJMNjIgNDJaIiBmaWxsPSIjRDhEOURBIi8+PHBhdGggZD0iTTUwIDUwQzU1LjUyMyA1MCA2MCA0NS41MjMgNjAgNDBDNjAgMzQuNDc3IDU1LjUyMyAzMCA1MCAzMEM0NC40NzcgMzAgNDAgMzQuNDc3IDQwIDQwQzQwIDQ1LjUjMyA0NC40NzcgNTAgNTAgNTBaIiBmaWxsPSIjRDhEOURBIi8+PC9zdmc+";
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </td>
+
+                          <td className="px-6 py-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {product.name}
+                            </div>
+                          </td>
+
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-semibold text-gray-900">
+                              {formatPrice(product.price)}
+                            </div>
+                          </td>
+
+                          <td className="px-6 py-4">
+                            <div
+                              className="max-w-xs truncate text-sm text-gray-700"
+                              title={product.description}
+                            >
+                              {product.description}
+                            </div>
+                          </td>
+
+                          <td className="px-6 py-4">
+                            <div
+                              className="max-w-xs truncate text-sm text-gray-700"
+                              title={product.stock}
+                            >
+                              {product.stock}
+                            </div>
+                          </td>
+
+                          <td className="px-6 py-4">
+                            <div
+                              className="flex max-w-xs items-center justify-center gap-2 truncate text-sm text-gray-700"
+                              title="product-action"
+                            >
+                              <div className="h-5 w-5">
+                                <button
+                                  key={product.id}
+                                  onClick={() => handleOpenAndSelect(product)}
+                                  className="h-full w-full"
+                                >
+                                  <img
+                                    src={Edit}
+                                    alt="edit-action-icon"
+                                    className="h-full w-full"
+                                  />
+                                </button>
+                              </div>
+                              <div className="h-5 w-5">
+                                <button className="h-full w-full">
+                                  <img
+                                    src={Delete}
+                                    alt="delete-action-icon"
+                                    className="h-full w-full"
+                                  />
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -403,46 +345,44 @@ function ProductList() {
               <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
                 <div className="text-sm text-gray-700">
                   Showing{" "}
-                  <span className="font-semibold">
-                    {paginatedProducts.length}
-                  </span>{" "}
+                  <span className="font-semibold">{products.length}</span>{" "}
                   product of <span className="font-semibold">100</span> product
                 </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
-                  >
-                    Prev
-                  </button>
-
-                  <div className="flex items-center space-x-1">
-                    {Array.from({ length: Math.min(9, totalPages) }, (_, i) => {
-                      const page = i + 1;
-                      return (
-                        <button
-                          key={page}
-                          onClick={() => handlePageChange(page)}
-                          className={`rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium ${
-                            page === currentPage
-                              ? "text-brand-orange"
-                              : "text-black"
-                          }`}
-                        >
-                          {page}
-                        </button>
-                      );
-                    })}
+                {/* Pagination */}
+                <div className="flex items-center justify-between border-t border-[#E8E8E8] p-6 text-sm text-[#4F5665]">
+                  <div className="flex items-center gap-6">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="cursor-pointer font-medium transition-colors hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Prev
+                    </button>
+                    <div className="flex items-center gap-4 font-medium">
+                      {/* Dynamic page numbers could be improved if total pages are known */}
+                      <span className="text-brand-orange text-lg font-bold">
+                        {currentPage}
+                      </span>
+                      <span
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        className="cursor-pointer transition-colors hover:text-black"
+                      >
+                        {currentPage + 1}
+                      </span>
+                      <span
+                        onClick={() => handlePageChange(currentPage + 2)}
+                        className="cursor-pointer transition-colors hover:text-black"
+                      >
+                        {currentPage + 2}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      className="cursor-pointer font-medium transition-colors hover:text-black"
+                    >
+                      Next
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
-                  >
-                    Next
-                  </button>
                 </div>
               </div>
             </div>

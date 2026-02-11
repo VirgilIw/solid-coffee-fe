@@ -2,22 +2,14 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchMenu = createAsyncThunk(
   "menu/fetchMenu",
-  async (
-    { page = 1, title = "" },
-    { getState, rejectWithValue },
-  ) => {
+  async (params, { getState, rejectWithValue }, ) => {
     try {
-      const params = new URLSearchParams();
-      params.append("page", page);
-
-      if (title) {
-        params.append("title", title);
-      }
 
       const token = getState().login.user?.token || "";
+      const pageNum = typeof params === 'object' ? params.page : (params || 1);
 
       const response = await fetch(
-        `${import.meta.env.VITE_SOLID_API_URL}/admin/menu/?${params.toString()}`,
+        `${import.meta.env.VITE_SOLID_API_URL}/admin/menu/${pageNum ? `?page=${pageNum}` : ""}`,
         {
           method: "GET",
           headers: {
@@ -25,7 +17,6 @@ export const fetchMenu = createAsyncThunk(
           }
         },
       );
-
       if (!response.ok) {
         throw new Error("Failed Get Data menu");
       }
@@ -193,5 +184,4 @@ const menuSlice = createSlice({
   },
 });
 
-export const { setPage } = menuSlice.actions;
 export default menuSlice.reducer;
